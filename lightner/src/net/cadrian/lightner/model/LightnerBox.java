@@ -22,8 +22,11 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
+import java.util.logging.Logger;
 
 public class LightnerBox {
+
+	private static final Logger logger = Logger.getLogger(LightnerBox.class.getName());
 
 	private final LightnerDay day = new LightnerDay();
 	private final File root;
@@ -51,17 +54,26 @@ public class LightnerBox {
 		final List<LightnerCard> result = new ArrayList<>();
 		for (final int box : day.getBoxes()) {
 			final File cardbox = new File(root, Integer.toString(box));
+			logger.info(() -> "Getting cards for box " + box + ": " + cardbox.getPath());
 			for (final File f : cardbox.listFiles(File::isFile)) {
+				logger.info(() -> "Adding card: " + f.getName());
 				result.add(new LightnerCard(this, box, new File(cards, f.getName())));
 			}
 		}
+		logger.info(() -> "Cards: " + result);
 		return result;
 	}
 
 	public LightnerCard newCard(final String name, final LightnerCardContent.Type type) throws IOException {
 		final File f = new File(cards, name);
 		f.mkdir();
-		return new LightnerCard(this, type, f);
+		final LightnerCard result = new LightnerCard(this, type, f);
+		final File b = new File(new File(root, "1"), name);
+		if (!b.createNewFile()) {
+			// TODO delete f and its content
+			throw new IOException("Could not create " + b.getPath());
+		}
+		return result;
 	}
 
 	boolean move(final LightnerCard card, final int fromBox, final int toBox) {

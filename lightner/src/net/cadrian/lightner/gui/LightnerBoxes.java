@@ -181,7 +181,7 @@ class LightnerBoxes extends JPanel {
 		try {
 			final UUID id = UUID.randomUUID();
 			final LightnerCard card = box.newCard("test:" + id, Type.TEXT);
-			final ContentText text = (ContentText) card.getContent();
+			final ContentText text = (ContentText) card.<String>getContent();
 			text.setQuestion("Question: " + id);
 			text.setAnswer("Answer: " + id);
 			content.add(card);

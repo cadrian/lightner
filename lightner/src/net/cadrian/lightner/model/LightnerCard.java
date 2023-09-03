@@ -38,29 +38,38 @@ public class LightnerCard {
 	private final LightnerCardContent.Type type;
 	private final LightnerCardContent<?> content;
 
-	private Date last;
+	private Date lastChange;
 	private int boxNumber;
 
 	LightnerCard(final LightnerBox box, final LightnerCardContent.Type type, final File file) throws IOException {
 		this.box = box;
 		this.file = file;
 		this.type = type;
-		last = new Date();
+		lastChange = new Date();
 		boxNumber = 1;
 		updateHistory("created");
 		content = type.getContent(file);
+
+		final File typeFile = new File(file, "type");
+		try (final PrintStream o = new PrintStream(new FileOutputStream(typeFile))) {
+			o.print(type.toString());
+		}
 	}
 
 	private void updateHistory(final String comment) throws IOException {
-		final File history = new File(file, "history");
-		final SimpleDateFormat sdf = new SimpleDateFormat("yyyyMMdd");
-		final String line = String.format("%s | box %d | %s", sdf.format(last), boxNumber, comment);
-		if (!history.exists()) {
-			try (final PrintStream o = new PrintStream(new FileOutputStream(history))) {
+		final String last = new SimpleDateFormat("yyyyMMdd").format(lastChange);
+		final File lastFile = new File(file, "last");
+		try (final PrintStream o = new PrintStream(new FileOutputStream(lastFile))) {
+			o.print(last);
+		}
+		final File historyFile = new File(file, "history");
+		final String line = String.format("%s | box %d | %s", last, boxNumber, comment);
+		if (!historyFile.exists()) {
+			try (final PrintStream o = new PrintStream(new FileOutputStream(historyFile))) {
 				o.println(line);
 			}
 		} else {
-			try (final PrintStream o = new PrintStream(new FileOutputStream(history, true))) {
+			try (final PrintStream o = new PrintStream(new FileOutputStream(historyFile, true))) {
 				o.println(line);
 			}
 		}
@@ -70,16 +79,16 @@ public class LightnerCard {
 		this.box = box;
 		this.file = file;
 		this.boxNumber = boxNumber;
-		last = getLast(file);
+		lastChange = getLast(file);
 		type = getType(file);
 		content = type.getContent(file);
 	}
 
 	private static Date getLast(final File file) throws IOException {
 		final SimpleDateFormat sdf = new SimpleDateFormat("yyyyMMdd");
-		final File date = new File(file, "last");
-		try (InputStream in = new BufferedInputStream(new FileInputStream(date))) {
-			final byte[] buffer = new byte[(int) date.length()];
+		final File dateFile = new File(file, "last");
+		try (InputStream in = new BufferedInputStream(new FileInputStream(dateFile))) {
+			final byte[] buffer = new byte[(int) dateFile.length()];
 			in.read(buffer);
 			return sdf.parse(new String(buffer));
 		} catch (final ParseException e) {
@@ -88,9 +97,9 @@ public class LightnerCard {
 	}
 
 	private static LightnerCardContent.Type getType(final File file) throws IOException {
-		final File type = new File(file, "type");
-		try (InputStream in = new BufferedInputStream(new FileInputStream(type))) {
-			final byte[] buffer = new byte[(int) type.length()];
+		final File typeFile = new File(file, "type");
+		try (InputStream in = new BufferedInputStream(new FileInputStream(typeFile))) {
+			final byte[] buffer = new byte[(int) typeFile.length()];
 			in.read(buffer);
 			return LightnerCardContent.Type.valueOf(new String(buffer));
 		} catch (final IllegalArgumentException e) {
@@ -102,8 +111,8 @@ public class LightnerCard {
 		return file.getName();
 	}
 
-	public Date getLast() {
-		return last;
+	public Date getLastChange() {
+		return lastChange;
 	}
 
 	public LightnerCardContent.Type getType() {
@@ -114,17 +123,18 @@ public class LightnerCard {
 		return boxNumber;
 	}
 
-	public LightnerCardContent<?> getContent() {
-		return content;
+	@SuppressWarnings("unchecked")
+	public <T> LightnerCardContent<T> getContent() {
+		return (LightnerCardContent<T>) content;
 	}
 
 	public boolean update(final int boxNumber, final String comment) throws IOException {
 		if (!box.move(this, this.boxNumber, boxNumber)) {
-			logger.severe("Could not move box " + getName() + " from " + this.boxNumber + " to " + boxNumber);
+			logger.severe(() -> "Could not move box " + getName() + " from " + this.boxNumber + " to " + boxNumber);
 			return false;
 		}
 
-		last = new Date();
+		lastChange = new Date();
 		this.boxNumber = boxNumber;
 		updateHistory(comment);
 		return true;
