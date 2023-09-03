@@ -29,13 +29,19 @@ public class LightnerDay {
 			{ 1, 3 }, { 1, 2 }, { 1, 4 }, { 1, 2 }, { 1, 3 }, { 1, 2 }, { 1, 7 }, { 1, 2 }, { 1, 3 }, { 1, 2, 6 },
 			{ 1, 5 }, { 1, 2, 4 }, { 1, 3 }, { 1, 2 }, { 1 } };
 
+	private final String date;
 	private final int day0;
 
 	public LightnerDay() {
 		final int year = Calendar.getInstance().get(Calendar.YEAR);
 		final int month = Calendar.getInstance().get(Calendar.MONTH);
 		final int day = Calendar.getInstance().get(Calendar.DAY_OF_MONTH);
+		date = String.format("%04d-%02d-%02d", year, month, day);
 		day0 = (year * 10000 + month * 100 + day) % 64;
+	}
+
+	public String getDate() {
+		return date;
 	}
 
 	public int getDay() {

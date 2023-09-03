@@ -57,7 +57,12 @@ public class LightnerBox {
 			logger.info(() -> "Getting cards for box " + box + ": " + cardbox.getPath());
 			for (final File f : cardbox.listFiles(File::isFile)) {
 				logger.info(() -> "Adding card: " + f.getName());
-				result.add(new LightnerCard(this, box, new File(cards, f.getName())));
+				final File cardFile = new File(cards, f.getName());
+				if (cardFile.isDirectory()) {
+					result.add(new LightnerCard(this, box, cardFile));
+				} else if (!f.delete()) {
+					logger.severe(() -> "Could not delete stale reference to card: " + f.getPath());
+				}
 			}
 		}
 		logger.info(() -> "Cards: " + result);
@@ -70,8 +75,17 @@ public class LightnerBox {
 		final LightnerCard result = new LightnerCard(this, type, f);
 		final File b = new File(new File(root, "1"), name);
 		if (!b.createNewFile()) {
-			// TODO delete f and its content
-			throw new IOException("Could not create " + b.getPath());
+			final String msg = "Could not create " + b.getPath();
+			logger.severe(msg);
+			for (final File t : f.listFiles(File::isFile)) {
+				if (!t.delete()) {
+					logger.severe(() -> "Could not delete file: " + t.getPath());
+				}
+			}
+			if (!f.delete()) {
+				logger.severe(() -> "Could not delete stale reference to card: " + f.getPath());
+			}
+			throw new IOException(msg);
 		}
 		return result;
 	}

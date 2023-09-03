@@ -28,14 +28,13 @@ class LightnerDayLabel extends JLabel {
 	private static final long serialVersionUID = 8442051196444294133L;
 
 	LightnerDayLabel(final LightnerDay day) {
-		setText(buildText(day.getDay(), day.getBoxes()));
+		setText(buildText(day.getDate(), day.getDay(), day.getBoxes()));
 		final Font f = getFont();
 		setFont(f.deriveFont(f.getStyle() | Font.BOLD));
 	}
 
-	private static String buildText(final int day, final int[] boxes) {
-		final StringBuilder result = new StringBuilder("Day ");
-		result.append(day).append(" - Boxes: ");
+	private static String buildText(final String date, final int day, final int[] boxes) {
+		final StringBuilder result = new StringBuilder(date).append(" - Day ").append(day).append("/64 - Boxes: ");
 		for (final int box : boxes) {
 			if (box > 1) {
 				result.append(", ");
