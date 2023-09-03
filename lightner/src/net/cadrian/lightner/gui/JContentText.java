@@ -20,6 +20,9 @@ class JContentText extends JSplitPane {
 		final JTextArea question = new JTextArea(text.getQuestion());
 		final JTextArea answer = new JTextArea(text.getAnswer());
 
+		question.setEditable(false);
+		answer.setEditable(false);
+
 		setTopComponent(new JScrollPane(question));
 		setBottomComponent(new JScrollPane(answer));
 

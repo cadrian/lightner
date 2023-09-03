@@ -23,6 +23,8 @@ import java.awt.Font;
 import java.awt.FontFormatException;
 import java.awt.GraphicsEnvironment;
 import java.awt.event.ActionEvent;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
 import java.io.IOException;
 import java.io.InputStream;
 import java.security.SecureRandom;
@@ -35,7 +37,9 @@ import java.util.logging.Logger;
 
 import javax.swing.JButton;
 import javax.swing.JLabel;
+import javax.swing.JMenuItem;
 import javax.swing.JPanel;
+import javax.swing.JPopupMenu;
 import javax.swing.JToolBar;
 
 import net.cadrian.lightner.model.ContentAudio;
@@ -138,7 +142,23 @@ class LightnerBoxes extends JPanel {
 		tools.add(add);
 		tools.add(delete);
 
-		add.addActionListener(this::addCard);
+		final JPopupMenu addMenu = new JPopupMenu("Add");
+		final JMenuItem addText = new JMenuItem("Text");
+		final JMenuItem addImage = new JMenuItem("Image");
+		final JMenuItem addAudio = new JMenuItem("Audio");
+		addMenu.add(addText);
+		addMenu.add(addImage);
+		addMenu.add(addAudio);
+
+		addText.addActionListener(this::addTextCard);
+
+		add.addMouseListener(new MouseAdapter() {
+			@Override
+			public void mouseClicked(final MouseEvent e) {
+				addMenu.show(e.getComponent(), e.getX(), e.getY());
+			}
+		});
+
 		next.addActionListener(this::nextCard);
 		previous.addActionListener(this::previousCard);
 
@@ -157,8 +177,7 @@ class LightnerBoxes extends JPanel {
 		content.previous();
 	}
 
-	private void addCard(final ActionEvent ae) {
-		// TODO Auto-generated method stub
+	private void addTextCard(final ActionEvent ae) {
 		try {
 			final UUID id = UUID.randomUUID();
 			final LightnerCard card = box.newCard("test:" + id, Type.TEXT);
