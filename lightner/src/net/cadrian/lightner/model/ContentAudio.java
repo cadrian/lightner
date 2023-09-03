@@ -27,7 +27,7 @@ import java.util.Set;
 
 import javax.sound.sampled.Clip;
 
-class ContentAudio implements LightnerCardContent<Clip> {
+public class ContentAudio implements LightnerCardContent<Clip> {
 
 	private static final Set<String> SUFFIXES = Collections
 			.unmodifiableSet(new HashSet<>(Arrays.asList(".wav", ".mp3", ".ogg")));

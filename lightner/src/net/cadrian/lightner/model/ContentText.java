@@ -30,7 +30,7 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.Set;
 
-class ContentText implements LightnerCardContent<String> {
+public class ContentText implements LightnerCardContent<String> {
 
 	private static final Set<String> SUFFIXES = Collections.singleton(".txt");
 
@@ -79,6 +79,9 @@ class ContentText implements LightnerCardContent<String> {
 
 	private static String read(final File file, final String what) throws IOException {
 		final File f = new File(file, what);
+		if (!f.exists()) {
+			return "";
+		}
 		final ByteArrayOutputStream bytes = new ByteArrayOutputStream();
 		try (InputStream in = new BufferedInputStream(new FileInputStream(f))) {
 			final byte[] buffer = new byte[4096];

@@ -26,7 +26,7 @@ import java.util.Collections;
 import java.util.HashSet;
 import java.util.Set;
 
-class ContentImage implements LightnerCardContent<Image> {
+public class ContentImage implements LightnerCardContent<Image> {
 
 	private static final Set<String> SUFFIXES = Collections
 			.unmodifiableSet(new HashSet<>(Arrays.asList(".png", ".gif", ".jpg", ".jpeg")));
