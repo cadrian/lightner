@@ -21,6 +21,7 @@ import java.awt.BorderLayout;
 import java.awt.GridLayout;
 import java.io.File;
 import java.io.IOException;
+import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import javax.swing.BorderFactory;
@@ -82,8 +83,7 @@ public class Lightner extends JFrame {
 			}
 		} catch (ClassNotFoundException | InstantiationException | IllegalAccessException
 				| UnsupportedLookAndFeelException e) {
-			logger.severe("Could not load L&F");
-			e.printStackTrace();
+			logger.log(Level.SEVERE, e, () -> "Could not load L&F");
 		}
 	}
 

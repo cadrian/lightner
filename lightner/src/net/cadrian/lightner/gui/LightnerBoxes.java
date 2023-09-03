@@ -30,6 +30,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.UUID;
+import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import javax.swing.JButton;
@@ -87,7 +88,7 @@ class LightnerBoxes extends JPanel {
 			}
 			emojiFont = font;
 		} else {
-			logger.info("Not loading emoji font");
+			logger.info(() -> "Not loading emoji font");
 			emojiFont = new JLabel().getFont().deriveFont(24f);
 		}
 	}
@@ -148,15 +149,15 @@ class LightnerBoxes extends JPanel {
 		}
 	}
 
-	private void nextCard(final ActionEvent e) {
+	private void nextCard(final ActionEvent ae) {
 		content.next();
 	}
 
-	private void previousCard(final ActionEvent e) {
+	private void previousCard(final ActionEvent ae) {
 		content.previous();
 	}
 
-	private void addCard(final ActionEvent e) {
+	private void addCard(final ActionEvent ae) {
 		// TODO Auto-generated method stub
 		try {
 			final UUID id = UUID.randomUUID();
@@ -165,8 +166,8 @@ class LightnerBoxes extends JPanel {
 			text.setQuestion("Question: " + id);
 			text.setAnswer("Answer: " + id);
 			content.add(card);
-		} catch (final IOException e1) {
-			e1.printStackTrace();
+		} catch (final IOException e) {
+			logger.log(Level.SEVERE, e, () -> "Could not add card");
 		}
 	}
 
@@ -179,7 +180,7 @@ class LightnerBoxes extends JPanel {
 
 		void add(final LightnerCard card) {
 			tmpname = card.getName();
-			logger.info("Adding card: " + tmpname);
+			logger.info(() -> "Adding card: " + tmpname);
 			currentIndex = cardsList.size();
 			cardsList.add(card);
 			card.getContent().accept(this);
@@ -190,15 +191,16 @@ class LightnerBoxes extends JPanel {
 			final LightnerCard card = get();
 			if (card != null) {
 				final String name = card.getName();
-				logger.info("Showing card: " + name);
+				logger.info(() -> "Showing card: " + name);
 				final CardLayout cl = (CardLayout) (cards.getLayout());
 				cl.show(cards, name);
+				cards.revalidate();
 			}
 			return card;
 		}
 
 		LightnerCard get() {
-			logger.info("currentIndex=" + currentIndex);
+			logger.info(() -> "currentIndex=" + currentIndex);
 			if (cardsList.isEmpty()) {
 				return null;
 			}
