@@ -55,7 +55,7 @@ public class Lightner extends JFrame {
 
 		final JPanel boxesPanel = new JPanel(new GridLayout(1, 1));
 		boxesPanel.setBorder(BorderFactory.createBevelBorder(BevelBorder.LOWERED));
-		final LightnerBoxes boxes = new LightnerBoxes(box);
+		final LightnerBoxes boxes = new LightnerBoxes(this, box);
 		boxesPanel.add(boxes);
 		content.add(boxesPanel, BorderLayout.CENTER);
 

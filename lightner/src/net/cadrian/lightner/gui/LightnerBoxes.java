@@ -19,6 +19,7 @@ package net.cadrian.lightner.gui;
 
 import java.awt.BorderLayout;
 import java.awt.CardLayout;
+import java.awt.Dimension;
 import java.awt.Font;
 import java.awt.FontFormatException;
 import java.awt.GraphicsEnvironment;
@@ -36,10 +37,14 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import javax.swing.JButton;
+import javax.swing.JDialog;
 import javax.swing.JLabel;
 import javax.swing.JMenuItem;
 import javax.swing.JPanel;
 import javax.swing.JPopupMenu;
+import javax.swing.JScrollPane;
+import javax.swing.JSplitPane;
+import javax.swing.JTextArea;
 import javax.swing.JToolBar;
 
 import net.cadrian.lightner.model.ContentAudio;
@@ -62,6 +67,7 @@ class LightnerBoxes extends JPanel {
 	}
 	private static final Font emojiFont;
 
+	private final Lightner owner;
 	private final transient Content content = new Content();
 	private final transient LightnerBox box;
 
@@ -97,9 +103,10 @@ class LightnerBoxes extends JPanel {
 		}
 	}
 
-	LightnerBoxes(final LightnerBox box) throws IOException {
+	LightnerBoxes(final Lightner owner, final LightnerBox box) throws IOException {
 		super(new BorderLayout());
 
+		this.owner = owner;
 		this.box = box;
 
 		cards = new JPanel(new CardLayout());
@@ -180,11 +187,41 @@ class LightnerBoxes extends JPanel {
 	private void addTextCard(final ActionEvent ae) {
 		try {
 			final UUID id = UUID.randomUUID();
-			final LightnerCard card = box.newCard("test:" + id, Type.TEXT);
-			final ContentText text = (ContentText) card.<String>getContent();
-			text.setQuestion("Question: " + id);
-			text.setAnswer("Answer: " + id);
-			content.add(card);
+
+			final JPanel contentPane = new JPanel(new BorderLayout());
+			final JDialog input = new JDialog(owner);
+			input.setContentPane(contentPane);
+
+			final JSplitPane inputPane = new JSplitPane(JSplitPane.VERTICAL_SPLIT);
+			final JTextArea question = new JTextArea();
+			final JTextArea answer = new JTextArea();
+
+			final JPanel questionPane = new JPanel(new BorderLayout());
+			questionPane.add(new JLabel("Question"), BorderLayout.NORTH);
+			questionPane.add(new JScrollPane(question), BorderLayout.CENTER);
+
+			final JPanel answerPane = new JPanel(new BorderLayout());
+			answerPane.add(new JLabel("Answer"), BorderLayout.NORTH);
+			answerPane.add(new JScrollPane(answer), BorderLayout.CENTER);
+
+			inputPane.setTopComponent(questionPane);
+			inputPane.setBottomComponent(answerPane);
+			inputPane.setDividerLocation(0.5f);
+			contentPane.add(inputPane, BorderLayout.CENTER);
+
+			input.setMinimumSize(new Dimension(640, 480));
+			input.pack();
+			input.setModal(true);
+			input.setLocationRelativeTo(owner);
+			input.setVisible(true);
+
+			if (false) {
+				final LightnerCard card = box.newCard("test:" + id, Type.TEXT);
+				final ContentText text = (ContentText) card.<String>getContent();
+				text.setQuestion("Question: " + id);
+				text.setAnswer("Answer: " + id);
+				content.add(card);
+			}
 		} catch (final IOException e) {
 			logger.log(Level.SEVERE, e, () -> "Could not add card");
 		}
