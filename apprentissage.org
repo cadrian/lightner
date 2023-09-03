@@ -1,0 +1,130 @@
+https://youtu.be/RVB3PBPxMWg?si=XpXQtJGPC9fH68oj
+
+* Répétition espacée
+
+Consolidation en révisant à des intervalles de plus en plus grands (jusqu'à 7 fois pour être sûr d'avoir bien appris) :
+
+- Apprentissage initial
+- Révision 1 jour après (cf ci-dessous)
+- Révision 2 à 3 jours après (cf ci-dessous)
+- Révision 1 semaine après (cf ci-dessous)
+- Révision 1 mois après (cf ci-dessous)
+- etc.
+
+=> faire un calendrier !
+
+* Révision par auto-test
+
+- Essayer de se souvenir / de mobiliser les connaissances
+- PUIS seulement relire / réviser
+
+** Méthode de la boîte de Leitner
+
+Principe : petites cartes avec une question d'un côté et une réponse de l'autre, et une boîte à 7 compartiments (au moins)
+
+Prendre une case, lire une question, tenter d'y répondre. Si c'est juste, la carte passe dans le compartiment suivante. Si c'est faux, elle revient dans le 1er compartiment.
+
+On consulte le 1e compartiment tous les jours, le 2e tous les 2 jours, le 3e tous les 4 jours, etc.
+
+Exemple de calendrier :
+
+|    | JOUR     | 1 | 2 | 3 | 4 | 5 | 6 | 7 |
+|    |          |   |   |   |   |   |   |   |
+|  1 | Lundi    | 1 | 2 |   |   |   |   |   |
+|  2 | Mardi    | 1 |   | 3 |   |   |   |   |
+|  3 | Mercredi | 1 | 2 |   |   |   |   |   |
+|  4 | Jeudi    | 1 |   |   | 4 |   |   |   |
+|  5 | Vendredi | 1 | 2 |   |   |   |   |   |
+|  6 | Samedi   | 1 |   | 3 |   |   |   |   |
+|  7 | Dimanche | 1 | 2 |   |   |   |   |   |
+|  8 | Lundi    | 1 |   |   |   |   |   |   |
+|  9 | Mardi    | 1 | 2 |   |   |   |   |   |
+| 10 | Mercredi | 1 |   | 3 |   |   |   |   |
+| 11 | Jeudi    | 1 | 2 |   |   |   |   |   |
+| 12 | Vendredi | 1 |   |   |   | 5 |   |   |
+| 13 | Samedi   | 1 | 2 |   | 4 |   |   |   |
+| 14 | Dimanche | 1 |   | 3 |   |   |   |   |
+| 15 | Lundi    | 1 | 2 |   |   |   |   |   |
+| 16 | Mardi    | 1 |   |   |   |   |   |   |
+| 17 | Mercredi | 1 | 2 |   |   |   |   |   |
+| 18 | Jeudi    | 1 |   | 3 |   |   |   |   |
+| 19 | Vendredi | 1 | 2 |   |   |   |   |   |
+| 20 | Samedi   | 1 |   |   | 4 |   |   |   |
+| 21 | Dimanche | 1 | 2 |   |   |   |   |   |
+| 22 | Lundi    | 1 |   | 3 |   |   |   |   |
+| 23 | Mardi    | 1 | 2 |   |   |   |   |   |
+| 24 | Mercredi | 1 |   |   |   |   | 6 |   |
+| 25 | Jeudi    | 1 | 2 |   |   |   |   |   |
+| 26 | Vendredi | 1 |   | 3 |   |   |   |   |
+| 27 | Samedi   | 1 | 2 |   |   |   |   |   |
+| 28 | Dimanche | 1 |   |   |   | 5 |   |   |
+| 29 | Lundi    | 1 | 2 |   | 4 |   |   |   |
+| 30 | Mardi    | 1 |   | 3 |   |   |   |   |
+| 31 | Mercredi | 1 | 2 |   |   |   |   |   |
+| 32 | Jeudi    | 1 |   |   |   |   |   |   |
+| 33 | Vendredi | 1 | 2 |   |   |   |   |   |
+| 34 | Samedi   | 1 |   | 3 |   |   |   |   |
+| 35 | Dimanche | 1 | 2 |   |   |   |   |   |
+| 36 | Lundi    | 1 |   |   | 4 |   |   |   |
+| 37 | Mardi    | 1 | 2 |   |   |   |   |   |
+| 38 | Mercredi | 1 |   | 3 |   |   |   |   |
+| 39 | Jeudi    | 1 | 2 |   |   |   |   |   |
+| 40 | Vendredi | 1 |   |   |   |   |   |   |
+| 41 | Samedi   | 1 | 2 |   |   |   |   |   |
+| 42 | Dimanche | 1 |   | 3 |   |   |   |   |
+| 43 | Lundi    | 1 | 2 |   |   |   |   |   |
+| 44 | Mardi    | 1 |   |   | 4 | 5 |   |   |
+| 45 | Mercredi | 1 | 2 |   |   |   |   |   |
+| 46 | Jeudi    | 1 |   | 3 |   |   |   |   |
+| 47 | Vendredi | 1 | 2 |   |   |   |   |   |
+| 48 | Samedi   | 1 |   |   |   |   |   |   |
+| 49 | Dimanche | 1 | 2 |   |   |   |   |   |
+| 50 | Lundi    | 1 |   | 3 |   |   |   |   |
+| 51 | Mardi    | 1 | 2 |   |   |   |   |   |
+| 52 | Mercredi | 1 |   |   | 4 |   |   |   |
+| 53 | Jeudi    | 1 | 2 |   |   |   |   |   |
+| 54 | Vendredi | 1 |   | 3 |   |   |   |   |
+| 55 | Samedi   | 1 | 2 |   |   |   |   |   |
+| 56 | Dimanche | 1 |   |   |   |   |   | 7 |
+| 57 | Lundi    | 1 | 2 |   |   |   |   |   |
+| 58 | Mardi    | 1 |   | 3 |   |   |   |   |
+| 59 | Mercredi | 1 | 2 |   |   |   | 6 |   |
+| 60 | Jeudi    | 1 |   |   |   | 5 |   |   |
+| 61 | Vendredi | 1 | 2 |   | 4 |   |   |   |
+| 62 | Samedi   | 1 |   | 3 |   |   |   |   |
+| 63 | Dimanche | 1 | 2 |   |   |   |   |   |
+| 64 | Lundi    | 1 |   |   |   |   |   |   |
+
+Exemples de questions :
+- QCM (sur des sites ou faits maison)
+- Questions
+
+
+Mobile app: Anki
+
+Il est important de bien MÉLANGER les questions (diversification)
+
+
+* Apprentissage génératif
+
+Démarche active de construction de schémas mentaux
+
+Posture active vis-à-vis du contenu
+
+Réfléchir sur les concepts clés - connecter à ce qu'on sait déjà
+
+Rappel libre JUSTE après l'apprentissage (le soir même) : noter tout ce dont on se souvient - 5 à 10 min
+
+Préparer des questions puis y répondre => de nouvelles questions pour Leitner
+
+** Schématisation
+
+Créer des diagrammes pour relier les concepts
+
+Carte mentale À LA MAIN
+
+** Expliquer à d'autres
+
+Essayer de transmettre de façon claire
+
+Essayer de l'expliquer - à son moi du passé - à un enfant de 8 ans
