@@ -23,10 +23,10 @@ import java.util.concurrent.atomic.AtomicReference;
 import javax.swing.ImageIcon;
 
 public enum LightnerIcon {
-	ABOUT, CARD_ADD, CARD_CHECK, CARD_DELETE, CARD_EDIT, CARD_FAIL, CARD_NEXT, CARD_PREVIOUS, EDIT_CANCEL, EDIT_COMMIT,
-	TYPE_AUDIO, TYPE_IMAGE, TYPE_LINK, TYPE_TEXT, TYPE_VIDEO;
+	ABOUT, BROWSE, CARD_ADD, CARD_CHECK, CARD_DELETE, CARD_EDIT, CARD_FAIL, CARD_NEXT, CARD_PREVIOUS, EDIT_CANCEL,
+	EDIT_COMMIT, TYPE_AUDIO, TYPE_IMAGE, TYPE_LINK, TYPE_TEXT, TYPE_VIDEO;
 
-	private static final AtomicReference<ImageIcon> icon = new AtomicReference<>();
+	private final AtomicReference<ImageIcon> icon = new AtomicReference<>();
 
 	public ImageIcon getIcon() {
 		return icon.accumulateAndGet(null, (prev, x) -> {

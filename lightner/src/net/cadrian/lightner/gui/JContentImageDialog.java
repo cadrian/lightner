@@ -75,7 +75,7 @@ class JContentImageDialog extends AbstractContentDialog {
 		final JToolBar questionTools = new JToolBar(SwingConstants.HORIZONTAL);
 		questionTools.setFloatable(false);
 		questionTools.add(new JLabel("Question   "));
-		final JButton questionBrowse = new JButton(" ⏏️ ");
+		final JButton questionBrowse = new JButton(LightnerIcon.BROWSE.getIcon());
 		questionBrowse.setToolTipText("Browse question image");
 		questionTools.add(questionBrowse);
 		final JLabel questionImage = new JLabel();
@@ -86,7 +86,7 @@ class JContentImageDialog extends AbstractContentDialog {
 		final JToolBar answerTools = new JToolBar(SwingConstants.HORIZONTAL);
 		answerTools.setFloatable(false);
 		answerTools.add(new JLabel("Answer   "));
-		final JButton answerBrowse = new JButton(" ⏏️ ");
+		final JButton answerBrowse = new JButton(LightnerIcon.BROWSE.getIcon());
 		answerBrowse.setToolTipText("Browse answer image");
 		answerTools.add(answerBrowse);
 		final JLabel answerImage = new JLabel();

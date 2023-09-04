@@ -37,11 +37,9 @@ abstract class AbstractContentDialog extends JDialog {
 		tools = new JToolBar(SwingConstants.HORIZONTAL);
 		tools.setFloatable(false);
 		tools.setAlignmentX(CENTER_ALIGNMENT);
-		validate = new JButton(" ✅ ");
-		validate.setFont(LightnerBoxes.emojiFont);
+		validate = new JButton(LightnerIcon.EDIT_COMMIT.getIcon());
 		validate.setToolTipText("Commit");
-		cancel = new JButton(" ❌ ");
-		cancel.setFont(LightnerBoxes.emojiFont);
+		cancel = new JButton(LightnerIcon.EDIT_CANCEL.getIcon());
 		cancel.setToolTipText("Cancel");
 		tools.add(validate);
 		tools.add(cancel);

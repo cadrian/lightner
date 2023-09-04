@@ -19,14 +19,10 @@ package net.cadrian.lightner.gui;
 
 import java.awt.BorderLayout;
 import java.awt.CardLayout;
-import java.awt.Font;
-import java.awt.FontFormatException;
-import java.awt.GraphicsEnvironment;
 import java.awt.event.ActionEvent;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.io.IOException;
-import java.io.InputStream;
 import java.security.SecureRandom;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -38,7 +34,6 @@ import java.util.logging.Logger;
 
 import javax.swing.JButton;
 import javax.swing.JComponent;
-import javax.swing.JLabel;
 import javax.swing.JMenuItem;
 import javax.swing.JPanel;
 import javax.swing.JPopupMenu;
@@ -58,13 +53,6 @@ class LightnerBoxes extends JPanel {
 	private static final long serialVersionUID = -7213515056863712630L;
 	private static final Logger logger = Logger.getLogger(LightnerBoxes.class.getName());
 
-	private static final boolean loadEmoji;
-	static {
-		// https://bugs.openjdk.org/browse/JDK-8269806
-		loadEmoji = false;
-	}
-	static final Font emojiFont;
-
 	private final Lightner owner;
 	private final transient Content content = new Content();
 	private final transient LightnerBox box;
@@ -77,29 +65,6 @@ class LightnerBoxes extends JPanel {
 	private final JButton add;
 	private final JButton delete;
 	private final JPanel cards;
-
-	static {
-		if (loadEmoji) {
-			final GraphicsEnvironment ge = GraphicsEnvironment.getLocalGraphicsEnvironment();
-
-			Font font = null;
-			try (InputStream in = Thread.currentThread().getContextClassLoader()
-					.getResourceAsStream("net/cadrian/lightner/rc/fonts/NotoColorEmoji-Regular.ttf")) {
-				if (in != null) {
-					logger.info("Loading emoji font…");
-					font = Font.createFont(Font.TRUETYPE_FONT, in).deriveFont(Font.PLAIN, 48f);
-					ge.registerFont(font);
-
-				}
-			} catch (FontFormatException | IOException e) {
-				e.printStackTrace();
-			}
-			emojiFont = font;
-		} else {
-			logger.info(() -> "Not loading emoji font");
-			emojiFont = new JLabel().getFont().deriveFont(24f);
-		}
-	}
 
 	LightnerBoxes(final Lightner owner, final LightnerBox box) throws IOException {
 		super(new BorderLayout());
@@ -115,26 +80,19 @@ class LightnerBoxes extends JPanel {
 		tools.setAlignmentX(CENTER_ALIGNMENT);
 		add(tools, BorderLayout.SOUTH);
 
-		previous = new JButton(" ◀️ ");
-		previous.setFont(emojiFont);
+		previous = new JButton(LightnerIcon.CARD_PREVIOUS.getIcon());
 		previous.setToolTipText("Previous");
-		next = new JButton(" ▶️ ");
-		next.setFont(emojiFont);
+		next = new JButton(LightnerIcon.CARD_NEXT.getIcon());
 		next.setToolTipText("Next");
-		check = new JButton(" ✅ ");
-		check.setFont(emojiFont);
+		check = new JButton(LightnerIcon.CARD_CHECK.getIcon());
 		check.setToolTipText("Good answer");
-		fail = new JButton(" ❌ ");
-		fail.setFont(emojiFont);
+		fail = new JButton(LightnerIcon.CARD_FAIL.getIcon());
 		fail.setToolTipText("Wrong answer");
-		edit = new JButton(" ✏️ ");
-		edit.setFont(emojiFont);
+		edit = new JButton(LightnerIcon.CARD_EDIT.getIcon());
 		edit.setToolTipText("Edit");
-		add = new JButton(" ➕ ");
-		add.setFont(emojiFont);
+		add = new JButton(LightnerIcon.CARD_ADD.getIcon());
 		add.setToolTipText("Add");
-		delete = new JButton(" ➖ ");
-		delete.setFont(emojiFont);
+		delete = new JButton(LightnerIcon.CARD_DELETE.getIcon());
 		delete.setToolTipText("Delete");
 
 		tools.add(previous);
@@ -148,11 +106,13 @@ class LightnerBoxes extends JPanel {
 		tools.add(delete);
 
 		final JPopupMenu addMenu = new JPopupMenu("Add");
-		final JMenuItem addText = new JMenuItem("Text");
-		final JMenuItem addLink = new JMenuItem("Link");
-		final JMenuItem addImage = new JMenuItem("Image");
-		final JMenuItem addAudio = new JMenuItem("Audio");
-		final JMenuItem addVideo = new JMenuItem("Video");
+		final JMenuItem addText = new JMenuItem("  Text", LightnerIcon.TYPE_TEXT.getIcon());
+		final JMenuItem addLink = new JMenuItem("  Link", LightnerIcon.TYPE_LINK.getIcon());
+		final JMenuItem addImage = new JMenuItem("  Image", LightnerIcon.TYPE_IMAGE.getIcon());
+		final JMenuItem addAudio = new JMenuItem("  Audio", LightnerIcon.TYPE_AUDIO.getIcon());
+		addAudio.setEnabled(false);// TODO
+		final JMenuItem addVideo = new JMenuItem("  Video", LightnerIcon.TYPE_VIDEO.getIcon());
+		addVideo.setEnabled(false);// TODO
 		addMenu.add(addText);
 		addMenu.add(addLink);
 		addMenu.add(addImage);
