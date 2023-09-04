@@ -24,7 +24,6 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.PrintStream;
-import java.text.SimpleDateFormat;
 import java.util.logging.Logger;
 
 public class LightnerCard {
@@ -55,13 +54,12 @@ public class LightnerCard {
 	}
 
 	private void updateHistory(final String comment) throws IOException {
-		final String last = new SimpleDateFormat("yyyyMMdd").format(lastChange);
 		final File lastFile = new File(file, "last");
 		try (final PrintStream o = new PrintStream(new FileOutputStream(lastFile))) {
-			o.print(last);
+			o.print(lastChange.toString());
 		}
 		final File historyFile = new File(file, "history");
-		final String line = String.format("%s | box %d | %s", last, boxNumber, comment);
+		final String line = String.format("%s | box %d | %s", lastChange.toPrettyString(), boxNumber, comment);
 		if (!historyFile.exists()) {
 			try (final PrintStream o = new PrintStream(new FileOutputStream(historyFile))) {
 				o.println(line);
