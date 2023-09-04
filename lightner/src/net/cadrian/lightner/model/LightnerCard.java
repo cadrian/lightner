@@ -24,9 +24,7 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.PrintStream;
-import java.text.ParseException;
 import java.text.SimpleDateFormat;
-import java.util.Date;
 import java.util.logging.Logger;
 
 public class LightnerCard {
@@ -38,14 +36,14 @@ public class LightnerCard {
 	private final LightnerCardContent.Type type;
 	private final LightnerCardContent<?> content;
 
-	private Date lastChange;
+	private LightnerDate lastChange;
 	private int boxNumber;
 
 	LightnerCard(final LightnerBox box, final LightnerCardContent.Type type, final File file) throws IOException {
 		this.box = box;
 		this.file = file;
 		this.type = type;
-		lastChange = new Date();
+		lastChange = new LightnerDate();
 		boxNumber = 1;
 		updateHistory("created");
 		content = type.getContent(file);
@@ -84,15 +82,12 @@ public class LightnerCard {
 		content = type.getContent(file);
 	}
 
-	private static Date getLast(final File file) throws IOException {
-		final SimpleDateFormat sdf = new SimpleDateFormat("yyyyMMdd");
+	private static LightnerDate getLast(final File file) throws IOException {
 		final File dateFile = new File(file, "last");
 		try (InputStream in = new BufferedInputStream(new FileInputStream(dateFile))) {
 			final byte[] buffer = new byte[(int) dateFile.length()];
 			in.read(buffer);
-			return sdf.parse(new String(buffer));
-		} catch (final ParseException e) {
-			throw new IOException(e);
+			return new LightnerDate(new String(buffer).trim());
 		}
 	}
 
@@ -101,7 +96,7 @@ public class LightnerCard {
 		try (InputStream in = new BufferedInputStream(new FileInputStream(typeFile))) {
 			final byte[] buffer = new byte[(int) typeFile.length()];
 			in.read(buffer);
-			return LightnerCardContent.Type.valueOf(new String(buffer));
+			return LightnerCardContent.Type.valueOf(new String(buffer).trim());
 		} catch (final IllegalArgumentException e) {
 			throw new IOException(e);
 		}
@@ -111,7 +106,7 @@ public class LightnerCard {
 		return file.getName();
 	}
 
-	public Date getLastChange() {
+	public LightnerDate getLastChange() {
 		return lastChange;
 	}
 
@@ -134,7 +129,7 @@ public class LightnerCard {
 			return false;
 		}
 
-		lastChange = new Date();
+		lastChange = new LightnerDate();
 		this.boxNumber = boxNumber;
 		updateHistory(comment);
 		return true;

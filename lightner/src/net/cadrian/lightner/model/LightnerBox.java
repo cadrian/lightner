@@ -52,6 +52,7 @@ public class LightnerBox {
 
 	public Collection<LightnerCard> getCards() throws IOException {
 		final List<LightnerCard> result = new ArrayList<>();
+		final LightnerDate now = new LightnerDate();
 		for (final int box : day.getBoxes()) {
 			final File cardbox = new File(root, Integer.toString(box));
 			logger.info(() -> "Getting cards for box " + box + ": " + cardbox.getPath());
@@ -59,7 +60,13 @@ public class LightnerBox {
 				logger.info(() -> "Adding card: " + f.getName());
 				final File cardFile = new File(cards, f.getName());
 				if (cardFile.isDirectory()) {
-					result.add(new LightnerCard(this, box, cardFile));
+					final LightnerCard card = new LightnerCard(this, box, cardFile);
+					if (now.compareTo(card.getLastChange()) > 0) {
+						result.add(card);
+					} else {
+						logger.info(() -> "Not displaying card, already done today: " + card.getName() + " ("
+								+ card.getLastChange().toPrettyString() + " / " + now.toPrettyString() + ")");
+					}
 				} else if (!f.delete()) {
 					logger.severe(() -> "Could not delete stale reference to card: " + f.getPath());
 				}

@@ -21,6 +21,7 @@ import java.awt.Font;
 
 import javax.swing.JLabel;
 
+import net.cadrian.lightner.model.LightnerDate;
 import net.cadrian.lightner.model.LightnerDay;
 
 class LightnerDayLabel extends JLabel {
@@ -33,8 +34,9 @@ class LightnerDayLabel extends JLabel {
 		setFont(f.deriveFont(f.getStyle() | Font.BOLD));
 	}
 
-	private static String buildText(final String date, final int day, final int[] boxes) {
-		final StringBuilder result = new StringBuilder(date).append(" - Day ").append(day).append("/64 - Boxes: ");
+	private static String buildText(final LightnerDate date, final int day, final int[] boxes) {
+		final StringBuilder result = new StringBuilder(date.toPrettyString()).append(" - Day ").append(day)
+				.append("/64 - Boxes: ");
 		for (final int box : boxes) {
 			if (box > 1) {
 				result.append(", ");
