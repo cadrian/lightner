@@ -22,6 +22,8 @@ import java.awt.Color;
 import java.awt.Cursor;
 import java.awt.Desktop;
 import java.awt.Font;
+import java.awt.GridBagConstraints;
+import java.awt.GridBagLayout;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.awt.font.TextAttribute;
@@ -56,7 +58,10 @@ class JContentLink extends JPanel {
 		thelink.setHorizontalTextPosition(SwingConstants.CENTER);
 		thelink.setVerticalAlignment(SwingConstants.CENTER);
 
-		add(thelink, BorderLayout.CENTER);
+		final JPanel linkPane = new JPanel(new GridBagLayout());
+		linkPane.add(thelink, new GridBagConstraints());
+
+		add(linkPane, BorderLayout.CENTER);
 
 		thelink.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
 		thelink.addMouseListener(new MouseAdapter() {
@@ -78,6 +83,7 @@ class JContentLink extends JPanel {
 				}
 			}
 		});
+
 	}
 
 }

@@ -19,6 +19,8 @@ package net.cadrian.lightner.gui;
 
 import java.awt.BorderLayout;
 import java.awt.Dimension;
+import java.awt.GridBagConstraints;
+import java.awt.GridBagLayout;
 import java.util.UUID;
 
 import javax.swing.JButton;
@@ -50,8 +52,13 @@ class JContentLinkDialog extends JDialog {
 		setContentPane(contentPane);
 
 		final JTextField link = new JTextField();
-
-		contentPane.add(link, BorderLayout.CENTER);
+		final JPanel linkPane = new JPanel(new GridBagLayout());
+		GridBagConstraints c = new GridBagConstraints();
+		c.fill = GridBagConstraints.HORIZONTAL;
+		c.gridwidth = GridBagConstraints.REMAINDER;
+		c.weightx = 1.0;
+		linkPane.add(link, c);
+		contentPane.add(linkPane, BorderLayout.CENTER);
 
 		final JToolBar tools = new JToolBar(SwingConstants.HORIZONTAL);
 		tools.setFloatable(false);
