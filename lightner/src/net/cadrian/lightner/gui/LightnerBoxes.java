@@ -122,6 +122,11 @@ class LightnerBoxes extends JPanel {
 		addText.addActionListener(this::addTextCard);
 		addLink.addActionListener(this::addLinkCard);
 		addImage.addActionListener(this::addImageCard);
+		// TODO addAudio.addActionListener(this::addAudioCard);
+		// TODO addVideo.addActionListener(this::addVideoCard);
+
+		// note: archive, don't delete!
+		// TODO delete.addActionListener(this::deleteCard);
 
 		add.addMouseListener(new MouseAdapter() {
 			@Override
@@ -157,9 +162,9 @@ class LightnerBoxes extends JPanel {
 				final int boxNumber = card.getBoxNumber();
 				final boolean updated;
 				if (boxNumber == 7) {
-					updated = card.update(boxNumber, "Card checked");
+					updated = card.update(boxNumber, "Card succeded");
 				} else {
-					updated = card.update(boxNumber + 1, "Card checked");
+					updated = card.update(boxNumber + 1, "Card succeded");
 				}
 				if (updated) {
 					logger.severe(() -> "Checked card " + card.getName());

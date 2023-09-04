@@ -24,6 +24,8 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.PrintStream;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.logging.Logger;
 
 public class LightnerCard {
@@ -42,33 +44,16 @@ public class LightnerCard {
 		this.box = box;
 		this.file = file;
 		this.type = type;
-		lastChange = new LightnerDate();
+		lastChange = new LightnerDate("19741215");
 		boxNumber = 1;
-		updateHistory("created");
 		content = type.getContent(file);
 
 		final File typeFile = new File(file, "type");
 		try (final PrintStream o = new PrintStream(new FileOutputStream(typeFile))) {
 			o.print(type.toString());
 		}
-	}
 
-	private void updateHistory(final String comment) throws IOException {
-		final File lastFile = new File(file, "last");
-		try (final PrintStream o = new PrintStream(new FileOutputStream(lastFile))) {
-			o.print(lastChange.toString());
-		}
-		final File historyFile = new File(file, "history");
-		final String line = String.format("%s | box %d | %s", lastChange.toPrettyString(), boxNumber, comment);
-		if (!historyFile.exists()) {
-			try (final PrintStream o = new PrintStream(new FileOutputStream(historyFile))) {
-				o.println(line);
-			}
-		} else {
-			try (final PrintStream o = new PrintStream(new FileOutputStream(historyFile, true))) {
-				o.println(line);
-			}
-		}
+		updateHistory("created");
 	}
 
 	LightnerCard(final LightnerBox box, final int boxNumber, final File file) throws IOException {
@@ -78,6 +63,27 @@ public class LightnerCard {
 		lastChange = getLast(file);
 		type = getType(file);
 		content = type.getContent(file);
+		updateHistory("loaded");
+	}
+
+	private void updateHistory(final String comment) throws IOException {
+		final File lastFile = new File(file, "last");
+		try (final PrintStream o = new PrintStream(new FileOutputStream(lastFile))) {
+			o.print(lastChange.toString());
+		}
+		final SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+		final String now = sdf.format(new Date());
+		final File historyFile = new File(file, "history");
+		final String line = String.format("%s | box %d | %s", now, boxNumber, comment);
+		if (!historyFile.exists()) {
+			try (final PrintStream o = new PrintStream(new FileOutputStream(historyFile))) {
+				o.println(line);
+			}
+		} else {
+			try (final PrintStream o = new PrintStream(new FileOutputStream(historyFile, true))) {
+				o.println(line);
+			}
+		}
 	}
 
 	private static LightnerDate getLast(final File file) throws IOException {
