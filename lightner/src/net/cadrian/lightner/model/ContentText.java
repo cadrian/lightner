@@ -78,7 +78,7 @@ public class ContentText implements LightnerCardContent<String> {
 	}
 
 	private static String read(final File file, final String what) throws IOException {
-		final File f = new File(file, what);
+		final File f = new File(file, what + ".txt");
 		if (!f.exists()) {
 			return "";
 		}
@@ -94,7 +94,7 @@ public class ContentText implements LightnerCardContent<String> {
 	}
 
 	private static void write(final File file, final String what, final String content) throws IOException {
-		final File f = new File(file, what);
+		final File f = new File(file, what + ".txt");
 		try (OutputStream o = new BufferedOutputStream(new FileOutputStream(f))) {
 			o.write(content.getBytes());
 		}
