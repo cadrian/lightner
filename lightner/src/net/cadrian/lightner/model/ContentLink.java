@@ -21,6 +21,7 @@ import java.io.File;
 import java.io.IOException;
 import java.net.URI;
 import java.net.URISyntaxException;
+import java.nio.charset.StandardCharsets;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.Set;
@@ -29,14 +30,12 @@ public class ContentLink extends AbstractLightnerCardContent {
 
 	private static final Set<String> SUFFIXES = Collections.singleton(".lnk");
 
-	private final File file;
-
 	private URI link;
 
 	ContentLink(final File file) throws IOException {
-		this.file = file;
+		super(file);
 		try {
-			link = new URI(read(file, "link.lnk"));
+			link = new URI(new String(read("link"), StandardCharsets.UTF_8));
 		} catch (final URISyntaxException e) {
 			throw new IOException(e);
 		}
@@ -48,7 +47,7 @@ public class ContentLink extends AbstractLightnerCardContent {
 		} catch (final URISyntaxException e) {
 			throw new IOException(e);
 		}
-		write(file, "link.lnk", link);
+		write("link.lnk", link.getBytes(StandardCharsets.UTF_8));
 	}
 
 	public URI getLink() {

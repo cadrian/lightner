@@ -19,25 +19,17 @@ package net.cadrian.lightner.gui;
 
 import java.awt.BorderLayout;
 import java.awt.Dimension;
+import java.awt.GridLayout;
 import java.util.UUID;
 
-import javax.swing.JButton;
-import javax.swing.JDialog;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
-import javax.swing.JSplitPane;
 import javax.swing.JTextArea;
-import javax.swing.JToolBar;
-import javax.swing.SwingConstants;
-import javax.swing.WindowConstants;
 
-class JContentTextDialog extends JDialog {
+class JContentTextDialog extends AbstractContentDialog {
 
 	private static final long serialVersionUID = 5169348014757965019L;
-
-	private final JButton validate;
-	private final JButton cancel;
 
 	@FunctionalInterface
 	interface Creator {
@@ -52,7 +44,7 @@ class JContentTextDialog extends JDialog {
 		final JPanel contentPane = new JPanel(new BorderLayout());
 		setContentPane(contentPane);
 
-		final JSplitPane inputPane = new JSplitPane(JSplitPane.VERTICAL_SPLIT);
+		final JPanel inputPane = new JPanel(new GridLayout(2, 1));
 		final JTextArea question = new JTextArea();
 		final JTextArea answer = new JTextArea();
 
@@ -64,26 +56,12 @@ class JContentTextDialog extends JDialog {
 		answerPane.add(new JLabel("Answer"), BorderLayout.NORTH);
 		answerPane.add(new JScrollPane(answer), BorderLayout.CENTER);
 
-		inputPane.setTopComponent(questionPane);
-		inputPane.setBottomComponent(answerPane);
-		inputPane.setDividerLocation(0.5f);
+		inputPane.add(questionPane);
+		inputPane.add(answerPane);
 		contentPane.add(inputPane, BorderLayout.CENTER);
 
-		final JToolBar tools = new JToolBar(SwingConstants.HORIZONTAL);
-		tools.setFloatable(false);
-		tools.setAlignmentX(CENTER_ALIGNMENT);
-		validate = new JButton(" ✅ ");
-		validate.setFont(LightnerBoxes.emojiFont);
-		validate.setToolTipText("Good answer");
-		cancel = new JButton(" ❌ ");
-		cancel.setFont(LightnerBoxes.emojiFont);
-		cancel.setToolTipText("Wrong answer");
-		tools.add(validate);
-		tools.add(cancel);
 		contentPane.add(tools, BorderLayout.SOUTH);
-		setDefaultCloseOperation(WindowConstants.DO_NOTHING_ON_CLOSE);
 
-		cancel.addActionListener(ae0 -> setVisible(false));
 		validate.addActionListener(ae0 -> {
 			setVisible(false);
 			creator.create(id, question.getText(), answer.getText());

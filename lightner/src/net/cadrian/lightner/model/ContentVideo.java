@@ -19,45 +19,25 @@ package net.cadrian.lightner.model;
 
 import java.io.File;
 import java.io.IOException;
-import java.nio.charset.StandardCharsets;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
+import java.util.HashSet;
 import java.util.Set;
 
-public class ContentText extends AbstractLightnerCardContent {
+public class ContentVideo extends AbstractLightnerCardContent {
 
-	private static final Set<String> SUFFIXES = Collections.singleton(".txt");
+	private static final Set<String> SUFFIXES = Collections
+			.unmodifiableSet(new HashSet<>(Arrays.asList(".avi", ".mp4", ".mov")));
 
-	private String question;
-	private String answer;
-
-	ContentText(final File file) throws IOException {
+	ContentVideo(final File file) throws IOException {
 		super(file);
-		question = new String(read("question"), StandardCharsets.UTF_8);
-		answer = new String(read("answer"), StandardCharsets.UTF_8);
-	}
-
-	public void setQuestion(final String question) throws IOException {
-		this.question = question;
-		write("question.txt", question.getBytes(StandardCharsets.UTF_8));
-	}
-
-	public void setAnswer(final String answer) throws IOException {
-		this.answer = answer;
-		write("answer.txt", answer.getBytes(StandardCharsets.UTF_8));
-	}
-
-	public String getQuestion() {
-		return question;
-	}
-
-	public String getAnswer() {
-		return answer;
+		// TODO Auto-generated constructor stub
 	}
 
 	@Override
 	public void accept(final Visitor v) {
-		v.visitText(this);
+		v.visitVideo(this);
 	}
 
 	@Override

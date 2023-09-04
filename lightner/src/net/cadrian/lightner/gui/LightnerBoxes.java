@@ -48,6 +48,7 @@ import net.cadrian.lightner.model.ContentAudio;
 import net.cadrian.lightner.model.ContentImage;
 import net.cadrian.lightner.model.ContentLink;
 import net.cadrian.lightner.model.ContentText;
+import net.cadrian.lightner.model.ContentVideo;
 import net.cadrian.lightner.model.LightnerBox;
 import net.cadrian.lightner.model.LightnerCard;
 import net.cadrian.lightner.model.LightnerCardContent;
@@ -151,13 +152,16 @@ class LightnerBoxes extends JPanel {
 		final JMenuItem addLink = new JMenuItem("Link");
 		final JMenuItem addImage = new JMenuItem("Image");
 		final JMenuItem addAudio = new JMenuItem("Audio");
+		final JMenuItem addVideo = new JMenuItem("Video");
 		addMenu.add(addText);
 		addMenu.add(addLink);
 		addMenu.add(addImage);
 		addMenu.add(addAudio);
+		addMenu.add(addVideo);
 
 		addText.addActionListener(this::addTextCard);
 		addLink.addActionListener(this::addLinkCard);
+		addImage.addActionListener(this::addImageCard);
 
 		add.addMouseListener(new MouseAdapter() {
 			@Override
@@ -255,11 +259,25 @@ class LightnerBoxes extends JPanel {
 		dialog.setVisible(true);
 	}
 
+	private void addImageCard(final ActionEvent ae) {
+		final JContentImageDialog dialog = new JContentImageDialog(owner, (id, q, qt, a, at) -> {
+			try {
+				final LightnerCard card = box.newCard(id.toString(), LightnerCardContent.Type.IMAGE);
+				final ContentImage link = (ContentImage) card.getContent();
+				link.setQuestion(q, qt);
+				link.setAnswer(a, at);
+				content.add(card);
+			} catch (final IOException e) {
+				logger.log(Level.SEVERE, e, () -> "Failed to create link card: " + id);
+			}
+		});
+		dialog.setVisible(true);
+	}
+
 	private final class Content {
 
 		private final List<LightnerCard> cardsList = new ArrayList<>();
 		private final Map<LightnerCard, JComponent> cardsMap = new HashMap<>();
-		private final JCardCreator visitor = new JCardCreator();
 		private int currentIndex = 0;
 
 		private static class JCardCreator implements LightnerCardContent.Visitor {
@@ -278,12 +296,17 @@ class LightnerBoxes extends JPanel {
 
 			@Override
 			public void visitImage(final ContentImage i) {
+				createdCard = new JContentImage(i);
+			}
+
+			@Override
+			public void visitAudio(final ContentAudio a) {
 				// TODO Auto-generated method stub
 
 			}
 
 			@Override
-			public void visitAudio(final ContentAudio a) {
+			public void visitVideo(final ContentVideo v) {
 				// TODO Auto-generated method stub
 
 			}
@@ -294,6 +317,7 @@ class LightnerBoxes extends JPanel {
 			final String cardName = card.getName();
 			logger.info(() -> "Adding card: " + cardName);
 			currentIndex = cardsList.size();
+			final JCardCreator visitor = new JCardCreator();
 			card.getContent().accept(visitor);
 			if (visitor.createdCard != null) {
 				cardsList.add(card);

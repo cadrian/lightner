@@ -34,30 +34,37 @@ import java.io.OutputStream;
  */
 abstract class AbstractLightnerCardContent implements LightnerCardContent {
 
-	protected AbstractLightnerCardContent() {
-		// empty
+	private static final byte[] empty = {};
+
+	protected final File file;
+
+	protected AbstractLightnerCardContent(final File file) {
+		this.file = file;
 	}
 
-	protected static String read(final File file, final String name) throws IOException {
-		final File f = new File(file, name);
-		if (!f.exists()) {
-			return "";
-		}
-		final ByteArrayOutputStream bytes = new ByteArrayOutputStream();
-		try (InputStream in = new BufferedInputStream(new FileInputStream(f))) {
-			final byte[] buffer = new byte[4096];
-			int n;
-			while ((n = in.read(buffer)) >= 0) {
-				bytes.write(buffer, 0, n);
+	protected byte[] read(final String name) throws IOException {
+		for (final String suffix : getFileSuffixes()) {
+
+			final File f = new File(file, name + suffix);
+			if (f.exists()) {
+				final ByteArrayOutputStream bytes = new ByteArrayOutputStream();
+				try (InputStream in = new BufferedInputStream(new FileInputStream(f))) {
+					final byte[] buffer = new byte[4096];
+					int n;
+					while ((n = in.read(buffer)) >= 0) {
+						bytes.write(buffer, 0, n);
+					}
+				}
+				return bytes.toByteArray();
 			}
 		}
-		return new String(bytes.toByteArray());
+		return empty;
 	}
 
-	protected static void write(final File file, final String name, final String content) throws IOException {
+	protected void write(final String name, final byte[] content) throws IOException {
 		final File f = new File(file, name);
 		try (OutputStream o = new BufferedOutputStream(new FileOutputStream(f))) {
-			o.write(content.getBytes());
+			o.write(content);
 		}
 	}
 

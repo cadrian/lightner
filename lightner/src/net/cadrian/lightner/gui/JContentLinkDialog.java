@@ -23,20 +23,12 @@ import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.util.UUID;
 
-import javax.swing.JButton;
-import javax.swing.JDialog;
 import javax.swing.JPanel;
 import javax.swing.JTextField;
-import javax.swing.JToolBar;
-import javax.swing.SwingConstants;
-import javax.swing.WindowConstants;
 
-class JContentLinkDialog extends JDialog {
+class JContentLinkDialog extends AbstractContentDialog {
 
 	private static final long serialVersionUID = 5169348014757965019L;
-
-	private final JButton validate;
-	private final JButton cancel;
 
 	@FunctionalInterface
 	interface Creator {
@@ -60,21 +52,8 @@ class JContentLinkDialog extends JDialog {
 		linkPane.add(link, c);
 		contentPane.add(linkPane, BorderLayout.CENTER);
 
-		final JToolBar tools = new JToolBar(SwingConstants.HORIZONTAL);
-		tools.setFloatable(false);
-		tools.setAlignmentX(CENTER_ALIGNMENT);
-		validate = new JButton(" ✅ ");
-		validate.setFont(LightnerBoxes.emojiFont);
-		validate.setToolTipText("Good answer");
-		cancel = new JButton(" ❌ ");
-		cancel.setFont(LightnerBoxes.emojiFont);
-		cancel.setToolTipText("Wrong answer");
-		tools.add(validate);
-		tools.add(cancel);
 		contentPane.add(tools, BorderLayout.SOUTH);
-		setDefaultCloseOperation(WindowConstants.DO_NOTHING_ON_CLOSE);
 
-		cancel.addActionListener(ae0 -> setVisible(false));
 		validate.addActionListener(ae0 -> {
 			setVisible(false);
 			creator.create(id, link.getText());

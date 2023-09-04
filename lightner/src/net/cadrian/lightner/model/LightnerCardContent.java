@@ -38,21 +38,20 @@ public interface LightnerCardContent {
 		},
 		IMAGE {
 			@Override
-			ContentImage getContent(final File file) {
+			ContentImage getContent(final File file) throws IOException {
 				return new ContentImage(file);
 			}
 		},
 		AUDIO {
 			@Override
-			ContentAudio getContent(final File file) {
+			ContentAudio getContent(final File file) throws IOException {
 				return new ContentAudio(file);
 			}
 		},
 		VIDEO {
 			@Override
-			LightnerCardContent getContent(final File file) throws IOException {
-				// TODO implement video
-				return null;
+			ContentVideo getContent(final File file) throws IOException {
+				return new ContentVideo(file);
 			}
 		};
 
@@ -68,7 +67,7 @@ public interface LightnerCardContent {
 
 		void visitAudio(ContentAudio a);
 
-		// TODO implement video
+		void visitVideo(ContentVideo v);
 	}
 
 	Collection<String> getFileSuffixes();

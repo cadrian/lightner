@@ -18,6 +18,7 @@
 package net.cadrian.lightner.model;
 
 import java.io.File;
+import java.io.IOException;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
@@ -29,7 +30,8 @@ public class ContentAudio extends AbstractLightnerCardContent {
 	private static final Set<String> SUFFIXES = Collections
 			.unmodifiableSet(new HashSet<>(Arrays.asList(".wav", ".mp3", ".ogg")));
 
-	ContentAudio(final File file) {
+	ContentAudio(final File file) throws IOException {
+		super(file);
 		// TODO Auto-generated constructor stub
 	}
 
