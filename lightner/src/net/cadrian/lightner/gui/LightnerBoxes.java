@@ -30,11 +30,14 @@ import java.io.InputStream;
 import java.security.SecureRandom;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import javax.swing.JButton;
+import javax.swing.JComponent;
 import javax.swing.JLabel;
 import javax.swing.JMenuItem;
 import javax.swing.JPanel;
@@ -161,6 +164,8 @@ class LightnerBoxes extends JPanel {
 
 		next.addActionListener(this::nextCard);
 		previous.addActionListener(this::previousCard);
+		check.addActionListener(this::validateCard);
+		fail.addActionListener(this::failCard);
 
 		final List<LightnerCard> theCards = new ArrayList<>(box.getCards());
 		Collections.shuffle(theCards, new SecureRandom());
@@ -175,6 +180,46 @@ class LightnerBoxes extends JPanel {
 
 	private void previousCard(final ActionEvent ae) {
 		content.previous();
+	}
+
+	private void validateCard(final ActionEvent ae) {
+		final LightnerCard card = content.get();
+		if (card != null) {
+			try {
+				final int boxNumber = card.getBoxNumber();
+				final boolean updated;
+				if (boxNumber == 7) {
+					updated = card.update(boxNumber, "Card checked");
+				} else {
+					updated = card.update(boxNumber + 1, "Card checked");
+				}
+				if (updated) {
+					logger.severe(() -> "Checked card " + card.getName());
+					content.hide();
+				} else {
+					logger.severe(() -> "Could not check card " + card.getName());
+				}
+			} catch (final IOException e) {
+				logger.log(Level.SEVERE, e, () -> "Could not check card " + card.getName());
+			}
+		}
+	}
+
+	private void failCard(final ActionEvent ae) {
+		final LightnerCard card = content.get();
+		if (card != null) {
+			try {
+				final boolean updated = card.update(1, "Card failed");
+				if (updated) {
+					logger.severe(() -> "Failed card " + card.getName());
+					content.hide();
+				} else {
+					logger.severe(() -> "Could not fail card " + card.getName());
+				}
+			} catch (final IOException e) {
+				logger.log(Level.SEVERE, e, () -> "Could not fail card " + card.getName());
+			}
+		}
 	}
 
 	private void addTextCard(final ActionEvent ae) {
@@ -192,20 +237,66 @@ class LightnerBoxes extends JPanel {
 		dialog.setVisible(true);
 	}
 
-	private final class Content implements LightnerCardContent.Visitor {
+	private final class Content {
 
 		private final List<LightnerCard> cardsList = new ArrayList<>();
+		private final Map<LightnerCard, JComponent> cardsMap = new HashMap<>();
+		private final JCardCreator visitor = new JCardCreator();
 		private int currentIndex = 0;
 
-		private String tmpname;
+		private static class JCardCreator implements LightnerCardContent.Visitor {
+
+			JComponent createdCard;
+
+			@Override
+			public void visitText(final ContentText t) {
+				createdCard = new JContentText(t);
+			}
+
+			@Override
+			public void visitImage(final ContentImage i) {
+				// TODO Auto-generated method stub
+
+			}
+
+			@Override
+			public void visitAudio(final ContentAudio a) {
+				// TODO Auto-generated method stub
+
+			}
+
+		}
 
 		void add(final LightnerCard card) {
-			tmpname = card.getName();
-			logger.info(() -> "Adding card: " + tmpname);
+			final String cardName = card.getName();
+			logger.info(() -> "Adding card: " + cardName);
 			currentIndex = cardsList.size();
-			cardsList.add(card);
-			card.getContent().accept(this);
-			showCard();
+			card.getContent().accept(visitor);
+			if (visitor.createdCard != null) {
+				cardsList.add(card);
+				cardsMap.put(card, visitor.createdCard);
+				cards.add(visitor.createdCard, cardName);
+				showCard();
+			}
+		}
+
+		/**
+		 * @return the hidden card, or <code>null</code> if none were hidden
+		 */
+		LightnerCard hide() {
+			// Remove from current deck only, just not to show the card again
+			final LightnerCard card;
+			if (cardsList.isEmpty()) {
+				card = null;
+			} else {
+				card = cardsList.remove(currentIndex);
+				cards.remove(cardsMap.remove(card));
+				if (currentIndex >= cardsList.size()) {
+					currentIndex = 0;
+				}
+				showCard();
+			}
+			return card;
 		}
 
 		LightnerCard showCard() {
@@ -242,23 +333,6 @@ class LightnerBoxes extends JPanel {
 			return showCard();
 		}
 
-		@Override
-		public void visitText(final ContentText t) {
-			final JContentText text = new JContentText(t);
-			cards.add(text, tmpname);
-		}
-
-		@Override
-		public void visitImage(final ContentImage i) {
-			// TODO Auto-generated method stub
-
-		}
-
-		@Override
-		public void visitAudio(final ContentAudio a) {
-			// TODO Auto-generated method stub
-
-		}
 	}
 
 }
