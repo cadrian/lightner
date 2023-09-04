@@ -21,13 +21,19 @@ import java.io.File;
 import java.io.IOException;
 import java.util.Collection;
 
-public interface LightnerCardContent<T> {
+public interface LightnerCardContent {
 
 	public enum Type {
 		TEXT {
 			@Override
 			ContentText getContent(final File file) throws IOException {
 				return new ContentText(file);
+			}
+		},
+		LINK {
+			@Override
+			ContentLink getContent(final File file) throws IOException {
+				return new ContentLink(file);
 			}
 		},
 		IMAGE {
@@ -44,17 +50,19 @@ public interface LightnerCardContent<T> {
 		},
 		VIDEO {
 			@Override
-			LightnerCardContent<?> getContent(final File file) throws IOException {
+			LightnerCardContent getContent(final File file) throws IOException {
 				// TODO implement video
 				return null;
 			}
 		};
 
-		abstract LightnerCardContent<?> getContent(File file) throws IOException;
+		abstract LightnerCardContent getContent(File file) throws IOException;
 	}
 
 	interface Visitor {
 		void visitText(ContentText t);
+
+		void visitLink(ContentLink l);
 
 		void visitImage(ContentImage i);
 
@@ -62,14 +70,6 @@ public interface LightnerCardContent<T> {
 
 		// TODO implement video
 	}
-
-	void setQuestion(T question) throws IOException;
-
-	void setAnswer(T answer) throws IOException;
-
-	T getQuestion();
-
-	T getAnswer();
 
 	Collection<String> getFileSuffixes();
 

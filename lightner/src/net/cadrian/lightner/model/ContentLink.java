@@ -18,25 +18,46 @@
 package net.cadrian.lightner.model;
 
 import java.io.File;
-import java.util.Arrays;
+import java.io.IOException;
+import java.net.URI;
+import java.net.URISyntaxException;
 import java.util.Collection;
 import java.util.Collections;
-import java.util.HashSet;
 import java.util.Set;
 
-public class ContentAudio extends AbstractLightnerCardContent {
+public class ContentLink extends AbstractLightnerCardContent {
 
-	private static final Set<String> SUFFIXES = Collections
-			.unmodifiableSet(new HashSet<>(Arrays.asList(".wav", ".mp3", ".ogg")));
+	private static final Set<String> SUFFIXES = Collections.singleton(".lnk");
 
-	ContentAudio(final File file) {
-		// TODO Auto-generated constructor stub
+	private final File file;
+
+	private URI link;
+
+	ContentLink(final File file) throws IOException {
+		this.file = file;
+		try {
+			link = new URI(read(file, "link.lnk"));
+		} catch (final URISyntaxException e) {
+			throw new IOException(e);
+		}
 	}
 
+	public void setLink(final String link) throws IOException {
+		try {
+			this.link = new URI(link);
+		} catch (final URISyntaxException e) {
+			throw new IOException(e);
+		}
+		write(file, "link.lnk", link);
+	}
+
+	public URI getLink() {
+		return link;
+	}
 
 	@Override
 	public void accept(final Visitor v) {
-		v.visitAudio(this);
+		v.visitLink(this);
 	}
 
 	@Override

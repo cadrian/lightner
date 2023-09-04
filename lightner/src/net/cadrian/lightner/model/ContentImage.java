@@ -17,46 +17,20 @@
  */
 package net.cadrian.lightner.model;
 
-import java.awt.Image;
 import java.io.File;
-import java.io.IOException;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.Set;
 
-public class ContentImage implements LightnerCardContent<Image> {
+public class ContentImage extends AbstractLightnerCardContent {
 
 	private static final Set<String> SUFFIXES = Collections
 			.unmodifiableSet(new HashSet<>(Arrays.asList(".png", ".gif", ".jpg", ".jpeg")));
 
 	ContentImage(final File file) {
 		// TODO Auto-generated constructor stub
-	}
-
-	@Override
-	public void setQuestion(final Image question) throws IOException {
-		// TODO Auto-generated method stub
-
-	}
-
-	@Override
-	public void setAnswer(final Image answer) throws IOException {
-		// TODO Auto-generated method stub
-
-	}
-
-	@Override
-	public Image getQuestion() {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	@Override
-	public Image getAnswer() {
-		// TODO Auto-generated method stub
-		return null;
 	}
 
 	@Override

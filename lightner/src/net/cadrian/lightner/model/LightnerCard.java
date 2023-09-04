@@ -33,7 +33,7 @@ public class LightnerCard {
 	private final LightnerBox box;
 	private final File file;
 	private final LightnerCardContent.Type type;
-	private final LightnerCardContent<?> content;
+	private final LightnerCardContent content;
 
 	private LightnerDate lastChange;
 	private int boxNumber;
@@ -116,9 +116,8 @@ public class LightnerCard {
 		return boxNumber;
 	}
 
-	@SuppressWarnings("unchecked")
-	public <T> LightnerCardContent<T> getContent() {
-		return (LightnerCardContent<T>) content;
+	public LightnerCardContent getContent() {
+		return content;
 	}
 
 	public boolean update(final int boxNumber, final String comment) throws IOException {

@@ -17,20 +17,13 @@
  */
 package net.cadrian.lightner.model;
 
-import java.io.BufferedInputStream;
-import java.io.BufferedOutputStream;
-import java.io.ByteArrayOutputStream;
 import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileOutputStream;
 import java.io.IOException;
-import java.io.InputStream;
-import java.io.OutputStream;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.Set;
 
-public class ContentText implements LightnerCardContent<String> {
+public class ContentText extends AbstractLightnerCardContent {
 
 	private static final Set<String> SUFFIXES = Collections.singleton(".txt");
 
@@ -41,28 +34,24 @@ public class ContentText implements LightnerCardContent<String> {
 
 	ContentText(final File file) throws IOException {
 		this.file = file;
-		question = read(file, "question");
-		answer = read(file, "answer");
+		question = read(file, "question.txt");
+		answer = read(file, "answer.txt");
 	}
 
-	@Override
 	public void setQuestion(final String question) throws IOException {
 		this.question = question;
-		write(file, "question", question);
+		write(file, "question.txt", question);
 	}
 
-	@Override
 	public void setAnswer(final String answer) throws IOException {
 		this.answer = answer;
-		write(file, "answer", answer);
+		write(file, "answer.txt", answer);
 	}
 
-	@Override
 	public String getQuestion() {
 		return question;
 	}
 
-	@Override
 	public String getAnswer() {
 		return answer;
 	}
@@ -75,29 +64,6 @@ public class ContentText implements LightnerCardContent<String> {
 	@Override
 	public Collection<String> getFileSuffixes() {
 		return SUFFIXES;
-	}
-
-	private static String read(final File file, final String what) throws IOException {
-		final File f = new File(file, what + ".txt");
-		if (!f.exists()) {
-			return "";
-		}
-		final ByteArrayOutputStream bytes = new ByteArrayOutputStream();
-		try (InputStream in = new BufferedInputStream(new FileInputStream(f))) {
-			final byte[] buffer = new byte[4096];
-			int n;
-			while ((n = in.read(buffer)) >= 0) {
-				bytes.write(buffer, 0, n);
-			}
-		}
-		return new String(bytes.toByteArray());
-	}
-
-	private static void write(final File file, final String what, final String content) throws IOException {
-		final File f = new File(file, what + ".txt");
-		try (OutputStream o = new BufferedOutputStream(new FileOutputStream(f))) {
-			o.write(content.getBytes());
-		}
 	}
 
 }

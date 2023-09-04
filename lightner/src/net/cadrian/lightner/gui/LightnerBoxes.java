@@ -46,6 +46,7 @@ import javax.swing.JToolBar;
 
 import net.cadrian.lightner.model.ContentAudio;
 import net.cadrian.lightner.model.ContentImage;
+import net.cadrian.lightner.model.ContentLink;
 import net.cadrian.lightner.model.ContentText;
 import net.cadrian.lightner.model.LightnerBox;
 import net.cadrian.lightner.model.LightnerCard;
@@ -147,13 +148,16 @@ class LightnerBoxes extends JPanel {
 
 		final JPopupMenu addMenu = new JPopupMenu("Add");
 		final JMenuItem addText = new JMenuItem("Text");
+		final JMenuItem addLink = new JMenuItem("Link");
 		final JMenuItem addImage = new JMenuItem("Image");
 		final JMenuItem addAudio = new JMenuItem("Audio");
 		addMenu.add(addText);
+		addMenu.add(addLink);
 		addMenu.add(addImage);
 		addMenu.add(addAudio);
 
 		addText.addActionListener(this::addTextCard);
+		addLink.addActionListener(this::addLinkCard);
 
 		add.addMouseListener(new MouseAdapter() {
 			@Override
@@ -226,12 +230,26 @@ class LightnerBoxes extends JPanel {
 		final JContentTextDialog dialog = new JContentTextDialog(owner, (id, q, a) -> {
 			try {
 				final LightnerCard card = box.newCard(id.toString(), LightnerCardContent.Type.TEXT);
-				final ContentText text = (ContentText) card.<String>getContent();
+				final ContentText text = (ContentText) card.getContent();
 				text.setQuestion(q);
 				text.setAnswer(a);
 				content.add(card);
 			} catch (final IOException e) {
 				logger.log(Level.SEVERE, e, () -> "Failed to create text card: " + id);
+			}
+		});
+		dialog.setVisible(true);
+	}
+
+	private void addLinkCard(final ActionEvent ae) {
+		final JContentLinkDialog dialog = new JContentLinkDialog(owner, (id, l) -> {
+			try {
+				final LightnerCard card = box.newCard(id.toString(), LightnerCardContent.Type.LINK);
+				final ContentLink link = (ContentLink) card.getContent();
+				link.setLink(l);
+				content.add(card);
+			} catch (final IOException e) {
+				logger.log(Level.SEVERE, e, () -> "Failed to create link card: " + id);
 			}
 		});
 		dialog.setVisible(true);
@@ -251,6 +269,11 @@ class LightnerBoxes extends JPanel {
 			@Override
 			public void visitText(final ContentText t) {
 				createdCard = new JContentText(t);
+			}
+
+			@Override
+			public void visitLink(final ContentLink l) {
+				createdCard = new JContentLink(l);
 			}
 
 			@Override
