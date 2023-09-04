@@ -53,7 +53,7 @@ class JContentLinkDialog extends JDialog {
 
 		final JTextField link = new JTextField();
 		final JPanel linkPane = new JPanel(new GridBagLayout());
-		GridBagConstraints c = new GridBagConstraints();
+		final GridBagConstraints c = new GridBagConstraints();
 		c.fill = GridBagConstraints.HORIZONTAL;
 		c.gridwidth = GridBagConstraints.REMAINDER;
 		c.weightx = 1.0;

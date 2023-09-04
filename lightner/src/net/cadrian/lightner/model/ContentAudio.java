@@ -33,7 +33,6 @@ public class ContentAudio extends AbstractLightnerCardContent {
 		// TODO Auto-generated constructor stub
 	}
 
-
 	@Override
 	public void accept(final Visitor v) {
 		v.visitAudio(this);
