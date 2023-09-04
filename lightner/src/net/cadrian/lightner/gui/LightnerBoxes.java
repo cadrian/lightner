@@ -19,7 +19,6 @@ package net.cadrian.lightner.gui;
 
 import java.awt.BorderLayout;
 import java.awt.CardLayout;
-import java.awt.Dimension;
 import java.awt.Font;
 import java.awt.FontFormatException;
 import java.awt.GraphicsEnvironment;
@@ -32,22 +31,15 @@ import java.security.SecureRandom;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
-import java.util.UUID;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import javax.swing.JButton;
-import javax.swing.JDialog;
 import javax.swing.JLabel;
 import javax.swing.JMenuItem;
 import javax.swing.JPanel;
 import javax.swing.JPopupMenu;
-import javax.swing.JScrollPane;
-import javax.swing.JSplitPane;
-import javax.swing.JTextArea;
 import javax.swing.JToolBar;
-import javax.swing.SwingConstants;
-import javax.swing.WindowConstants;
 
 import net.cadrian.lightner.model.ContentAudio;
 import net.cadrian.lightner.model.ContentImage;
@@ -55,7 +47,6 @@ import net.cadrian.lightner.model.ContentText;
 import net.cadrian.lightner.model.LightnerBox;
 import net.cadrian.lightner.model.LightnerCard;
 import net.cadrian.lightner.model.LightnerCardContent;
-import net.cadrian.lightner.model.LightnerCardContent.Type;
 
 class LightnerBoxes extends JPanel {
 
@@ -67,7 +58,7 @@ class LightnerBoxes extends JPanel {
 		// https://bugs.openjdk.org/browse/JDK-8269806
 		loadEmoji = false;
 	}
-	private static final Font emojiFont;
+	static final Font emojiFont;
 
 	private final Lightner owner;
 	private final transient Content content = new Content();
@@ -187,64 +178,18 @@ class LightnerBoxes extends JPanel {
 	}
 
 	private void addTextCard(final ActionEvent ae) {
-		final UUID id = UUID.randomUUID();
-
-		final JPanel contentPane = new JPanel(new BorderLayout());
-		final JDialog input = new JDialog(owner);
-		input.setContentPane(contentPane);
-
-		final JSplitPane inputPane = new JSplitPane(JSplitPane.VERTICAL_SPLIT);
-		final JTextArea question = new JTextArea();
-		final JTextArea answer = new JTextArea();
-
-		final JPanel questionPane = new JPanel(new BorderLayout());
-		questionPane.add(new JLabel("Question"), BorderLayout.NORTH);
-		questionPane.add(new JScrollPane(question), BorderLayout.CENTER);
-
-		final JPanel answerPane = new JPanel(new BorderLayout());
-		answerPane.add(new JLabel("Answer"), BorderLayout.NORTH);
-		answerPane.add(new JScrollPane(answer), BorderLayout.CENTER);
-
-		inputPane.setTopComponent(questionPane);
-		inputPane.setBottomComponent(answerPane);
-		inputPane.setDividerLocation(0.5f);
-		contentPane.add(inputPane, BorderLayout.CENTER);
-
-		final JToolBar tools = new JToolBar(SwingConstants.HORIZONTAL);
-		tools.setFloatable(false);
-		tools.setAlignmentX(CENTER_ALIGNMENT);
-		final JButton validate = new JButton(" ✅ ");
-		validate.setFont(emojiFont);
-		validate.setToolTipText("Good answer");
-		final JButton cancel = new JButton(" ❌ ");
-		cancel.setFont(emojiFont);
-		cancel.setToolTipText("Wrong answer");
-		tools.add(validate);
-		tools.add(cancel);
-		contentPane.add(tools, BorderLayout.SOUTH);
-		input.setDefaultCloseOperation(WindowConstants.DO_NOTHING_ON_CLOSE);
-
-		cancel.addActionListener(ae0 -> input.setVisible(false));
-		validate.addActionListener(ae0 -> {
-			input.setVisible(false);
-
+		final JContentTextDialog dialog = new JContentTextDialog(owner, (id, q, a) -> {
 			try {
-				final LightnerCard card = box.newCard(id.toString(), Type.TEXT);
+				final LightnerCard card = box.newCard(id.toString(), LightnerCardContent.Type.TEXT);
 				final ContentText text = (ContentText) card.<String>getContent();
-				text.setQuestion(question.getText());
-				text.setAnswer(answer.getText());
+				text.setQuestion(q);
+				text.setAnswer(a);
 				content.add(card);
 			} catch (final IOException e) {
 				logger.log(Level.SEVERE, e, () -> "Failed to create text card: " + id);
 			}
 		});
-
-		input.setTitle("Text: " + id);
-		input.setMinimumSize(new Dimension(640, 480));
-		input.pack();
-		input.setModal(true);
-		input.setLocationRelativeTo(owner);
-		input.setVisible(true);
+		dialog.setVisible(true);
 	}
 
 	private final class Content implements LightnerCardContent.Visitor {
