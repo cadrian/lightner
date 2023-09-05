@@ -18,6 +18,7 @@
 package net.cadrian.lightner.gui;
 
 import java.awt.Dimension;
+import java.util.UUID;
 
 import javax.swing.JButton;
 import javax.swing.JDialog;
@@ -33,8 +34,12 @@ abstract class AbstractContentDialog extends JDialog {
 	protected final JButton validate;
 	protected final JButton cancel;
 
+	protected final UUID id;
+
 	protected AbstractContentDialog(final Lightner owner) {
 		super(owner);
+
+		id = UUID.randomUUID();
 
 		tools = new JToolBar(SwingConstants.HORIZONTAL);
 		tools.setFloatable(false);

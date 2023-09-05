@@ -18,7 +18,6 @@
 package net.cadrian.lightner.gui;
 
 import java.awt.BorderLayout;
-import java.awt.Dimension;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.util.UUID;
@@ -37,8 +36,6 @@ class JContentLinkDialog extends AbstractContentDialog {
 
 	public JContentLinkDialog(final Lightner owner, final Creator creator) {
 		super(owner);
-
-		final UUID id = UUID.randomUUID();
 
 		final JPanel contentPane = new JPanel(new BorderLayout());
 		setContentPane(contentPane);

@@ -18,7 +18,6 @@
 package net.cadrian.lightner.gui;
 
 import java.awt.BorderLayout;
-import java.awt.Dimension;
 import java.awt.Graphics2D;
 import java.awt.GridLayout;
 import java.awt.RenderingHints;
@@ -65,8 +64,6 @@ class JContentImageDialog extends AbstractContentDialog {
 
 	public JContentImageDialog(final Lightner owner, final Creator creator) {
 		super(owner);
-
-		final UUID id = UUID.randomUUID();
 
 		final JPanel contentPane = new JPanel(new BorderLayout());
 		setContentPane(contentPane);

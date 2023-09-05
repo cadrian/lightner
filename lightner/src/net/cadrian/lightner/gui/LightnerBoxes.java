@@ -155,7 +155,7 @@ class LightnerBoxes extends JPanel {
 	}
 
 	private void about(final ActionEvent ae) {
-			new JAboutDialog(owner).setVisible(true);
+		new JAboutDialog(owner).setVisible(true);
 	}
 
 	private void nextCard(final ActionEvent ae) {
