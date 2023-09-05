@@ -17,6 +17,8 @@
  */
 package net.cadrian.lightner.gui;
 
+import java.awt.Dimension;
+
 import javax.swing.JButton;
 import javax.swing.JDialog;
 import javax.swing.JToolBar;
@@ -47,6 +49,10 @@ abstract class AbstractContentDialog extends JDialog {
 		cancel.addActionListener(ae0 -> setVisible(false));
 
 		setDefaultCloseOperation(WindowConstants.HIDE_ON_CLOSE);
+
+		setMinimumSize(new Dimension(640, 480));
+		setModal(true);
+		setLocationRelativeTo(owner);
 	}
 
 }

@@ -59,11 +59,8 @@ class JContentLinkDialog extends AbstractContentDialog {
 			creator.create(id, link.getText());
 		});
 
-		setTitle("Text: " + id);
-		setMinimumSize(new Dimension(640, 480));
+		setTitle("Link: " + id);
 		pack();
-		setModal(true);
-		setLocationRelativeTo(owner);
 	}
 
 }

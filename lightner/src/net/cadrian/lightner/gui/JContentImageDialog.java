@@ -108,11 +108,8 @@ class JContentImageDialog extends AbstractContentDialog {
 			creator.create(id, question.get(), questionType.get(), answer.get(), answerType.get());
 		});
 
-		setTitle("Text: " + id);
-		setMinimumSize(new Dimension(640, 480));
+		setTitle("Image: " + id);
 		pack();
-		setModal(true);
-		setLocationRelativeTo(owner);
 	}
 
 	private void browse(final String what, final JLabel displayImage, final AtomicReference<BufferedImage> image,

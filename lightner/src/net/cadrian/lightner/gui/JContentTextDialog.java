@@ -68,10 +68,7 @@ class JContentTextDialog extends AbstractContentDialog {
 		});
 
 		setTitle("Text: " + id);
-		setMinimumSize(new Dimension(640, 480));
 		pack();
-		setModal(true);
-		setLocationRelativeTo(owner);
 	}
 
 }

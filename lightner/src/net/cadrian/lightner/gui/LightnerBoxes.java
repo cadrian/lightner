@@ -64,6 +64,7 @@ class LightnerBoxes extends JPanel {
 	private final JButton edit;
 	private final JButton add;
 	private final JButton delete;
+	private final JButton about;
 	private final JPanel cards;
 
 	LightnerBoxes(final Lightner owner, final LightnerBox box) throws IOException {
@@ -94,6 +95,8 @@ class LightnerBoxes extends JPanel {
 		add.setToolTipText("Add");
 		delete = new JButton(LightnerIcon.CARD_DELETE.getIcon());
 		delete.setToolTipText("Delete");
+		about = new JButton(LightnerIcon.ABOUT.getIcon());
+		about.setToolTipText("About Lightner");
 
 		tools.add(previous);
 		tools.add(next);
@@ -104,6 +107,8 @@ class LightnerBoxes extends JPanel {
 		tools.add(edit);
 		tools.add(add);
 		tools.add(delete);
+		tools.addSeparator();
+		tools.add(about);
 
 		final JPopupMenu addMenu = new JPopupMenu("Add");
 		final JMenuItem addText = new JMenuItem("  Text", LightnerIcon.TYPE_TEXT.getIcon());
@@ -128,6 +133,8 @@ class LightnerBoxes extends JPanel {
 		// note: archive, don't delete!
 		// TODO delete.addActionListener(this::deleteCard);
 
+		about.addActionListener(this::about);
+
 		add.addMouseListener(new MouseAdapter() {
 			@Override
 			public void mouseClicked(final MouseEvent e) {
@@ -145,6 +152,10 @@ class LightnerBoxes extends JPanel {
 		for (final LightnerCard aCard : theCards) {
 			content.add(aCard);
 		}
+	}
+
+	private void about(final ActionEvent ae) {
+			new JAboutDialog(owner).setVisible(true);
 	}
 
 	private void nextCard(final ActionEvent ae) {
