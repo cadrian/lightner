@@ -37,11 +37,11 @@ import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.SwingConstants;
 
-import net.cadrian.lightner.model.ContentLink;
+import net.cadrian.lightner.model.content.link.ContentLink;
 
 class JContentLink extends JPanel {
 
-	private static final long serialVersionUID = -3931635794876357617L;
+	private static final long serialVersionUID = 8604811393806569292L;
 	private static final Logger logger = Logger.getLogger(JContentLink.class.getName());
 
 	public JContentLink(final ContentLink link) {

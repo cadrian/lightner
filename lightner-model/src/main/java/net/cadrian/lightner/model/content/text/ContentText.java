@@ -15,7 +15,7 @@
  * You should have received a copy of the GNU General Public License
  * along with Lightner.  If not, see <http://www.gnu.org/licenses/>.
  */
-package net.cadrian.lightner.model;
+package net.cadrian.lightner.model.content.text;
 
 import java.io.File;
 import java.io.IOException;
@@ -24,6 +24,8 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.Set;
 
+import net.cadrian.lightner.model.content.AbstractLightnerCardContent;
+
 public class ContentText extends AbstractLightnerCardContent {
 
 	private static final Set<String> SUFFIXES = Collections.singleton(".txt");
@@ -31,7 +33,7 @@ public class ContentText extends AbstractLightnerCardContent {
 	private String question;
 	private String answer;
 
-	ContentText(final File file) throws IOException {
+	public ContentText(final File file) throws IOException {
 		super(file);
 		question = new String(read("question"), StandardCharsets.UTF_8);
 		answer = new String(read("answer"), StandardCharsets.UTF_8);

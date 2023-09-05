@@ -25,7 +25,7 @@ import javax.swing.JScrollPane;
 import javax.swing.JSplitPane;
 import javax.swing.JTextArea;
 
-import net.cadrian.lightner.model.ContentText;
+import net.cadrian.lightner.model.content.text.ContentText;
 
 class JContentText extends JSplitPane {
 

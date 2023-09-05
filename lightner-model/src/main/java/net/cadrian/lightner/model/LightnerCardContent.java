@@ -21,6 +21,12 @@ import java.io.File;
 import java.io.IOException;
 import java.util.Collection;
 
+import net.cadrian.lightner.model.content.audio.ContentAudio;
+import net.cadrian.lightner.model.content.image.ContentImage;
+import net.cadrian.lightner.model.content.link.ContentLink;
+import net.cadrian.lightner.model.content.text.ContentText;
+import net.cadrian.lightner.model.content.video.ContentVideo;
+
 public interface LightnerCardContent {
 
 	public enum Type {

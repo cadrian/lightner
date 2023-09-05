@@ -15,29 +15,50 @@
  * You should have received a copy of the GNU General Public License
  * along with Lightner.  If not, see <http://www.gnu.org/licenses/>.
  */
-package net.cadrian.lightner.model;
+package net.cadrian.lightner.model.content.link;
 
 import java.io.File;
 import java.io.IOException;
-import java.util.Arrays;
+import java.net.URI;
+import java.net.URISyntaxException;
+import java.nio.charset.StandardCharsets;
 import java.util.Collection;
 import java.util.Collections;
-import java.util.HashSet;
 import java.util.Set;
 
-public class ContentVideo extends AbstractLightnerCardContent {
+import net.cadrian.lightner.model.content.AbstractLightnerCardContent;
 
-	private static final Set<String> SUFFIXES = Collections
-			.unmodifiableSet(new HashSet<>(Arrays.asList(".avi", ".mp4", ".mov")));
+public class ContentLink extends AbstractLightnerCardContent {
 
-	ContentVideo(final File file) throws IOException {
+	private static final Set<String> SUFFIXES = Collections.singleton(".lnk");
+
+	private URI link;
+
+	public ContentLink(final File file) throws IOException {
 		super(file);
-		// TODO Auto-generated constructor stub
+		try {
+			link = new URI(new String(read("link"), StandardCharsets.UTF_8));
+		} catch (final URISyntaxException e) {
+			throw new IOException(e);
+		}
+	}
+
+	public void setLink(final String link) throws IOException {
+		try {
+			this.link = new URI(link);
+		} catch (final URISyntaxException e) {
+			throw new IOException(e);
+		}
+		write("link.lnk", link.getBytes(StandardCharsets.UTF_8));
+	}
+
+	public URI getLink() {
+		return link;
 	}
 
 	@Override
 	public void accept(final Visitor v) {
-		v.visitVideo(this);
+		v.visitLink(this);
 	}
 
 	@Override

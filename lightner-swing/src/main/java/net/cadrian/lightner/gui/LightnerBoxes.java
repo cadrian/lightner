@@ -39,14 +39,14 @@ import javax.swing.JPanel;
 import javax.swing.JPopupMenu;
 import javax.swing.JToolBar;
 
-import net.cadrian.lightner.model.ContentAudio;
-import net.cadrian.lightner.model.ContentImage;
-import net.cadrian.lightner.model.ContentLink;
-import net.cadrian.lightner.model.ContentText;
-import net.cadrian.lightner.model.ContentVideo;
 import net.cadrian.lightner.model.LightnerBox;
 import net.cadrian.lightner.model.LightnerCard;
 import net.cadrian.lightner.model.LightnerCardContent;
+import net.cadrian.lightner.model.content.audio.ContentAudio;
+import net.cadrian.lightner.model.content.image.ContentImage;
+import net.cadrian.lightner.model.content.link.ContentLink;
+import net.cadrian.lightner.model.content.text.ContentText;
+import net.cadrian.lightner.model.content.video.ContentVideo;
 
 class LightnerBoxes extends JPanel {
 
@@ -115,7 +115,6 @@ class LightnerBoxes extends JPanel {
 		final JMenuItem addLink = new JMenuItem("  Link", LightnerIcon.TYPE_LINK.getIcon());
 		final JMenuItem addImage = new JMenuItem("  Image", LightnerIcon.TYPE_IMAGE.getIcon());
 		final JMenuItem addAudio = new JMenuItem("  Audio", LightnerIcon.TYPE_AUDIO.getIcon());
-		addAudio.setEnabled(false);// TODO
 		final JMenuItem addVideo = new JMenuItem("  Video", LightnerIcon.TYPE_VIDEO.getIcon());
 		addVideo.setEnabled(false);// TODO
 		addMenu.add(addText);
@@ -127,7 +126,7 @@ class LightnerBoxes extends JPanel {
 		addText.addActionListener(this::addTextCard);
 		addLink.addActionListener(this::addLinkCard);
 		addImage.addActionListener(this::addImageCard);
-		// TODO addAudio.addActionListener(this::addAudioCard);
+		addAudio.addActionListener(this::addAudioCard);
 		// TODO addVideo.addActionListener(this::addVideoCard);
 
 		// note: archive, don't delete!
@@ -239,12 +238,27 @@ class LightnerBoxes extends JPanel {
 		final JContentImageDialog dialog = new JContentImageDialog(owner, (id, q, qt, a, at) -> {
 			try {
 				final LightnerCard card = box.newCard(id.toString(), LightnerCardContent.Type.IMAGE);
-				final ContentImage link = (ContentImage) card.getContent();
-				link.setQuestion(q, qt);
-				link.setAnswer(a, at);
+				final ContentImage image = (ContentImage) card.getContent();
+				image.setQuestion(q, qt);
+				image.setAnswer(a, at);
 				content.add(card);
 			} catch (final IOException e) {
-				logger.log(Level.SEVERE, e, () -> "Failed to create link card: " + id);
+				logger.log(Level.SEVERE, e, () -> "Failed to create image card: " + id);
+			}
+		});
+		dialog.setVisible(true);
+	}
+
+	private void addAudioCard(final ActionEvent ae) {
+		final JContentAudioDialog dialog = new JContentAudioDialog(owner, (id, q, a) -> {
+			try {
+				final LightnerCard card = box.newCard(id.toString(), LightnerCardContent.Type.AUDIO);
+				final ContentAudio audio = (ContentAudio) card.getContent();
+				audio.setQuestion(q);
+				audio.setAnswer(a);
+				content.add(card);
+			} catch (final IOException e) {
+				logger.log(Level.SEVERE, e, () -> "Failed to create audio card: " + id);
 			}
 		});
 		dialog.setVisible(true);
@@ -277,8 +291,11 @@ class LightnerBoxes extends JPanel {
 
 			@Override
 			public void visitAudio(final ContentAudio a) {
-				// TODO Auto-generated method stub
-
+				try {
+					createdCard = new JContentAudio(a);
+				} catch (final IOException e) {
+					logger.log(Level.SEVERE, e, () -> "Failed to show audio card");
+				}
 			}
 
 			@Override

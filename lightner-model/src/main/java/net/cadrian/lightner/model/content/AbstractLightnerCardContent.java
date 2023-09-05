@@ -15,7 +15,7 @@
  * You should have received a copy of the GNU General Public License
  * along with Lightner.  If not, see <http://www.gnu.org/licenses/>.
  */
-package net.cadrian.lightner.model;
+package net.cadrian.lightner.model.content;
 
 import java.io.BufferedInputStream;
 import java.io.BufferedOutputStream;
@@ -27,12 +27,14 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 
+import net.cadrian.lightner.model.LightnerCardContent;
+
 /**
  * Common file manipulation methods
  *
  * @param <T>
  */
-abstract class AbstractLightnerCardContent implements LightnerCardContent {
+public abstract class AbstractLightnerCardContent implements LightnerCardContent {
 
 	private static final byte[] empty = {};
 
@@ -42,30 +44,38 @@ abstract class AbstractLightnerCardContent implements LightnerCardContent {
 		this.file = file;
 	}
 
-	protected byte[] read(final String name) throws IOException {
+	protected File getFile(final String name) {
 		for (final String suffix : getFileSuffixes()) {
-
 			final File f = new File(file, name + suffix);
 			if (f.exists()) {
-				final ByteArrayOutputStream bytes = new ByteArrayOutputStream();
-				try (InputStream in = new BufferedInputStream(new FileInputStream(f))) {
-					final byte[] buffer = new byte[4096];
-					int n;
-					while ((n = in.read(buffer)) >= 0) {
-						bytes.write(buffer, 0, n);
-					}
-				}
-				return bytes.toByteArray();
+				return f;
 			}
 		}
-		return empty;
+		return null;
 	}
 
-	protected void write(final String name, final byte[] content) throws IOException {
+	protected byte[] read(final String name) throws IOException {
+		final File f = getFile(name);
+		if (f == null) {
+			return empty;
+		}
+		final ByteArrayOutputStream bytes = new ByteArrayOutputStream();
+		try (InputStream in = new BufferedInputStream(new FileInputStream(f))) {
+			final byte[] buffer = new byte[4096];
+			int n;
+			while ((n = in.read(buffer)) >= 0) {
+				bytes.write(buffer, 0, n);
+			}
+		}
+		return bytes.toByteArray();
+	}
+
+	protected File write(final String name, final byte[] content) throws IOException {
 		final File f = new File(file, name);
 		try (OutputStream o = new BufferedOutputStream(new FileOutputStream(f))) {
 			o.write(content);
 		}
+		return f;
 	}
 
 }

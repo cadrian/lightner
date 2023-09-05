@@ -42,11 +42,12 @@ import javax.swing.JToolBar;
 import javax.swing.SwingConstants;
 import javax.swing.filechooser.FileFilter;
 
-import net.cadrian.lightner.model.ContentImage.ImageType;
+import net.cadrian.lightner.model.content.image.ImageType;
 
 class JContentImageDialog extends AbstractContentDialog {
 
-	private static final long serialVersionUID = 5169348014757965019L;
+	private static final long serialVersionUID = 1094081034935420268L;
+
 	private static final Logger logger = Logger.getLogger(JContentImageDialog.class.getName());
 
 	@FunctionalInterface
@@ -160,7 +161,7 @@ class JContentImageDialog extends AbstractContentDialog {
 	}
 
 	// https://stackoverflow.com/a/34169084 (improved)
-	static BufferedImage fitimage(final BufferedImage img, final int w, final int h) {
+	private static BufferedImage fitimage(final BufferedImage img, final int w, final int h) {
 		final int w0 = img.getWidth();
 		final int h0 = img.getHeight();
 		final double dw = (double) w / w0;

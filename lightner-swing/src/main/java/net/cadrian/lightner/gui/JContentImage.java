@@ -26,11 +26,11 @@ import javax.swing.JLabel;
 import javax.swing.JScrollPane;
 import javax.swing.JSplitPane;
 
-import net.cadrian.lightner.model.ContentImage;
+import net.cadrian.lightner.model.content.image.ContentImage;
 
 class JContentImage extends JSplitPane {
 
-	private static final long serialVersionUID = -3931635794876357617L;
+	private static final long serialVersionUID = -2523279009966567627L;
 
 	public JContentImage(final ContentImage image) {
 		super(JSplitPane.VERTICAL_SPLIT);

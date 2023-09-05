@@ -17,47 +17,47 @@
  */
 package net.cadrian.lightner.gui;
 
-import java.awt.BorderLayout;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
-import java.util.UUID;
+import java.io.IOException;
 
+import javax.swing.JLabel;
 import javax.swing.JPanel;
-import javax.swing.JTextField;
 
-class JContentLinkDialog extends AbstractContentDialog {
+import net.cadrian.lightner.model.content.audio.ContentAudio;
 
-	private static final long serialVersionUID = -3893242864370254333L;
+class JContentAudio extends JPanel {
 
-	@FunctionalInterface
-	interface Creator {
-		void create(UUID id, String link);
-	}
+	private static final long serialVersionUID = -2132868618296976893L;
 
-	public JContentLinkDialog(final Lightner owner, final Creator creator) {
-		super(owner);
+	public JContentAudio(final ContentAudio audio) throws IOException {
+		super(new GridBagLayout());
 
-		final JPanel contentPane = new JPanel(new BorderLayout());
-		setContentPane(contentPane);
+		final JAudioClip question = new JAudioClip(audio.getQuestion().getFile());
+		final JAudioClip answer = new JAudioClip(audio.getAnswer().getFile());
 
-		final JTextField link = new JTextField();
-		final JPanel linkPane = new JPanel(new GridBagLayout());
+		final JPanel content = new JPanel(new GridBagLayout());
 		final GridBagConstraints c = new GridBagConstraints();
 		c.fill = GridBagConstraints.HORIZONTAL;
+		c.gridwidth = 1;
+		c.weightx = 0.0;
+		c.gridx = 0;
+		c.gridy = 0;
+		content.add(new JLabel("Question "), c);
+		c.gridy = 1;
+		content.add(new JLabel("Answer "), c);
 		c.gridwidth = GridBagConstraints.REMAINDER;
 		c.weightx = 1.0;
-		linkPane.add(link, c);
-		contentPane.add(linkPane, BorderLayout.CENTER);
+		c.gridx = 1;
+		c.gridy = 0;
+		content.add(question, c);
+		c.gridy = 1;
+		content.add(answer, c);
 
-		contentPane.add(tools, BorderLayout.SOUTH);
-
-		validate.addActionListener(ae0 -> {
-			setVisible(false);
-			creator.create(id, link.getText());
-		});
-
-		setTitle("Link: " + id);
-		pack();
+		c.gridx = c.gridy = 0;
+		c.weightx = 0.0;
+		c.weightx = 1.0;
+		add(content, c);
 	}
 
 }

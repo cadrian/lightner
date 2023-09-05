@@ -15,7 +15,7 @@
  * You should have received a copy of the GNU General Public License
  * along with Lightner.  If not, see <http://www.gnu.org/licenses/>.
  */
-package net.cadrian.lightner.model;
+package net.cadrian.lightner.model.content.image;
 
 import java.awt.image.BufferedImage;
 import java.io.ByteArrayInputStream;
@@ -25,12 +25,12 @@ import java.io.IOException;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
-import java.util.HashMap;
 import java.util.HashSet;
-import java.util.Map;
 import java.util.Set;
 
 import javax.imageio.ImageIO;
+
+import net.cadrian.lightner.model.content.AbstractLightnerCardContent;
 
 /**
  *
@@ -40,39 +40,10 @@ public class ContentImage extends AbstractLightnerCardContent {
 	private static final Set<String> SUFFIXES = Collections
 			.unmodifiableSet(new HashSet<>(Arrays.asList(".png", ".gif", ".jpg", ".jpeg")));
 
-	public enum ImageType {
-		PNG("png"), GIF("gif"), JPG("jpg", "jpeg");
-
-		private static final Map<String, ImageType> MAP = new HashMap<>();
-		private String[] suffixes;
-
-		private ImageType(final String... suffixes) {
-			this.suffixes = suffixes;
-		}
-
-		public String getSuffix() {
-			return suffixes[0];
-		}
-
-		static {
-			for (final ImageType t : values()) {
-				for (final String s : t.suffixes) {
-					MAP.put(s, t);
-				}
-			}
-		}
-
-		public static ImageType get(final String filename) {
-			final int i = filename.lastIndexOf('.');
-			final String suffix = i < 0 ? filename : filename.substring(i + 1);
-			return MAP.get(suffix.toLowerCase());
-		}
-	}
-
 	private BufferedImage question;
 	private BufferedImage answer;
 
-	ContentImage(final File file) throws IOException {
+	public ContentImage(final File file) throws IOException {
 		super(file);
 		question = ImageIO.read(new ByteArrayInputStream(read("question")));
 		answer = ImageIO.read(new ByteArrayInputStream(read("answer")));

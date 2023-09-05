@@ -7,3 +7,5 @@ target
 .project
 pkg
 .sonarlint
+LightnerBox
+.codetogether.ignore
