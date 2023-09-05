@@ -38,8 +38,6 @@ class JContentTextDialog extends AbstractContentDialog {
 	public JContentTextDialog(final Lightner owner, final Creator creator) {
 		super(owner);
 
-		final UUID id = UUID.randomUUID();
-
 		final JPanel contentPane = new JPanel(new BorderLayout());
 		setContentPane(contentPane);
 
