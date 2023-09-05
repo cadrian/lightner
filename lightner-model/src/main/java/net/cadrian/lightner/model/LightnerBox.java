@@ -33,6 +33,7 @@ public class LightnerBox {
 	private final File cards;
 
 	public LightnerBox(final File root) throws IOException {
+		logger.info(() -> "Lightner Box root: " + root.getAbsolutePath());
 		this.root = root;
 		cards = new File(root, "cards");
 		if (!root.isDirectory()) {

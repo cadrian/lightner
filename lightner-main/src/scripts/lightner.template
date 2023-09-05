@@ -1,0 +1,8 @@
+#!/bin/bash
+
+mkdir -p "$HOME/.lightner.d"
+cd "$HOME/.lightner.d"
+
+exec >> log
+date -R
+exec java -classpath /usr/share/maven-repo/net/cadrian/lightner/main/debian/*:%CLASSPATH% net.cadrian.lightner.Main

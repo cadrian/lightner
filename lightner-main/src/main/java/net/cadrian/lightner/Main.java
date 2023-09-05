@@ -22,7 +22,7 @@ import net.cadrian.lightner.gui.Lightner;
 public class Main {
 
 	public static void main(final String[] args) throws Exception {
-		new Lightner(".lightnerbox").setVisible(true);
+		new Lightner("LightnerBox").setVisible(true);
 	}
 
 }

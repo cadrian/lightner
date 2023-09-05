@@ -25,7 +25,19 @@ function buildModule() {
         cd build/$module
 
         mvn install > mvn-install.log
-
+        case $module in
+            lightner-main)
+                # Special treatment for main: need to fill the right classpath in the main script
+                (
+                    mvn dependency:build-classpath -Dmdep.outputFile=src/scripts/cp.txt > getdep.log
+                    cd src/scripts
+                    sed "s!%CLASSPATH%!$(sed "s!$HOME/.m2/repository!/usr/share/maven-repo!g;s!/[^/]*/[^/]*jar!/debian/*!g" cp.txt)!" lightner.template > lightner
+                )
+                ;;
+            *)
+                :
+                ;;
+        esac
         debuild -b -us -uc > build.log || {
             echo "less -R pkg/$module/build.log"
             exit 1
@@ -45,7 +57,7 @@ if [ $# -gt 0 ]; then
         buildModule lightner-${module#lightner-}
     done
 else
-    for module in root model swing main; do
+    for module in main swing model root; do
         prepareModule lightner-$module
     done
     for module in root model swing main; do
