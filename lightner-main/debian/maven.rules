@@ -1,0 +1,5 @@
+
+net.cadrian.lightner main jar s/.*/debian/ * *
+net.cadrian.lightner model jar s/.*/debian/ * *
+net.cadrian.lightner root pom s/.*/debian/ * *
+net.cadrian.lightner swing jar s/.*/debian/ * *

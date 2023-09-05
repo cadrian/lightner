@@ -1,0 +1,19 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+        <modelVersion>4.0.0</modelVersion>
+        <parent>
+                <groupId>net.cadrian.lightner</groupId>
+                <artifactId>root</artifactId>
+                <version>0.0.1-SNAPSHOT</version>
+                <relativePath>../lightner-root/pom.xml</relativePath>
+        </parent>
+        <artifactId>model</artifactId>
+        <name>LightnerModel</name>
+
+        <properties>
+                <debian.hasPackageVersion/>
+                <debian.originalVersion>0.0.1-SNAPSHOT</debian.originalVersion>
+                <debian.package>liblightner-model-java</debian.package>
+        </properties>
+</project>

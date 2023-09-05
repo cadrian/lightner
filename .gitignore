@@ -1,1 +1,9 @@
 .metadata
+bin
+target
+.classpath
+.lightnerbox
+.settings
+.project
+pkg
+.sonarlint

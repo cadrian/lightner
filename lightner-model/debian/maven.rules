@@ -1,0 +1,3 @@
+
+net.cadrian.lightner model jar s/.*/debian/ * *
+net.cadrian.lightner root pom s/.*/debian/ * *
