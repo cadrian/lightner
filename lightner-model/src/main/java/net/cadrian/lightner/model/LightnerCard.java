@@ -17,10 +17,6 @@
  */
 package net.cadrian.lightner.model;
 
-import java.io.BufferedInputStream;
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.PrintStream;
@@ -28,77 +24,75 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.logging.Logger;
 
+import net.cadrian.lightner.dao.LightnerDataCard;
+import net.cadrian.lightner.dao.LightnerDataContent;
+
 public class LightnerCard {
 
 	private static final Logger logger = Logger.getLogger(LightnerCard.class.getName());
 
 	private final LightnerBox box;
-	private final File file;
+	private final LightnerDataCard data;
 	private final LightnerCardContent.Type type;
 	private final LightnerCardContent content;
 
 	private LightnerDate lastChange;
 	private int boxNumber;
 
-	LightnerCard(final LightnerBox box, final LightnerCardContent.Type type, final File file) throws IOException {
+	LightnerCard(final LightnerBox box, final LightnerCardContent.Type type, final LightnerDataCard data)
+			throws IOException {
 		this.box = box;
-		this.file = file;
+		this.data = data;
 		this.type = type;
 		lastChange = new LightnerDate("19741215");
 		boxNumber = 1;
-		content = type.getContent(file);
+		content = type.getContent(data);
 
-		final File typeFile = new File(file, "type");
-		try (final PrintStream o = new PrintStream(new FileOutputStream(typeFile))) {
+		final LightnerDataContent typeFile = data.getContent("type", true);
+		try (final PrintStream o = new PrintStream(typeFile.getOutputStream())) {
 			o.print(type.toString());
 		}
 
-		updateHistory("created");
+		updateHistory("created", true);
 	}
 
-	LightnerCard(final LightnerBox box, final int boxNumber, final File file) throws IOException {
+	LightnerCard(final LightnerBox box, final int boxNumber, final LightnerDataCard data) throws IOException {
 		this.box = box;
-		this.file = file;
+		this.data = data;
 		this.boxNumber = boxNumber;
-		lastChange = getLast(file);
-		type = getType(file);
-		content = type.getContent(file);
-		updateHistory("loaded");
+		lastChange = getLast(data);
+		type = getType(data);
+		content = type.getContent(data);
+		updateHistory("loaded", false);
 	}
 
-	private void updateHistory(final String comment) throws IOException {
-		final File lastFile = new File(file, "last");
-		try (final PrintStream o = new PrintStream(new FileOutputStream(lastFile))) {
+	private void updateHistory(final String comment, final boolean create) throws IOException {
+		final LightnerDataContent lastData = data.getContent("last", create);
+		try (final PrintStream o = new PrintStream(lastData.getOutputStream())) {
 			o.print(lastChange.toString());
 		}
 		final SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 		final String now = sdf.format(new Date());
-		final File historyFile = new File(file, "history");
+		final LightnerDataContent historyData = data.getContent("history", create);
 		final String line = String.format("%s | box %d | %s", now, boxNumber, comment);
-		if (!historyFile.exists()) {
-			try (final PrintStream o = new PrintStream(new FileOutputStream(historyFile))) {
-				o.println(line);
-			}
-		} else {
-			try (final PrintStream o = new PrintStream(new FileOutputStream(historyFile, true))) {
-				o.println(line);
-			}
+		try (final PrintStream o = new PrintStream(historyData.getOutputStream(true))) {
+			o.println(line);
 		}
 	}
 
-	private static LightnerDate getLast(final File file) throws IOException {
-		final File dateFile = new File(file, "last");
-		try (InputStream in = new BufferedInputStream(new FileInputStream(dateFile))) {
-			final byte[] buffer = new byte[(int) dateFile.length()];
+	private static LightnerDate getLast(final LightnerDataCard data) throws IOException {
+		final LightnerDataContent lastData = data.getContent("last");
+		try (InputStream in = lastData.getInputStream()) {
+			final byte[] buffer = new byte[lastData.length()];
 			in.read(buffer);
 			return new LightnerDate(new String(buffer).trim());
 		}
 	}
 
-	private static LightnerCardContent.Type getType(final File file) throws IOException {
-		final File typeFile = new File(file, "type");
-		try (InputStream in = new BufferedInputStream(new FileInputStream(typeFile))) {
-			final byte[] buffer = new byte[(int) typeFile.length()];
+	private static LightnerCardContent.Type getType(final LightnerDataCard data) throws IOException {
+		final LightnerDataContent typeData = data.getContent("type");
+		try (InputStream in = typeData.getInputStream()) {
+			final byte[] buffer = new byte[typeData.length()];
 			in.read(buffer);
 			return LightnerCardContent.Type.valueOf(new String(buffer).trim());
 		} catch (final IllegalArgumentException e) {
@@ -106,8 +100,12 @@ public class LightnerCard {
 		}
 	}
 
+	LightnerDataCard getData() {
+		return data;
+	}
+
 	public String getName() {
-		return file.getName();
+		return data.getName();
 	}
 
 	public LightnerDate getLastChange() {
@@ -134,7 +132,7 @@ public class LightnerCard {
 
 		lastChange = new LightnerDate();
 		this.boxNumber = boxNumber;
-		updateHistory(comment);
+		updateHistory(comment, false);
 		return true;
 	}
 

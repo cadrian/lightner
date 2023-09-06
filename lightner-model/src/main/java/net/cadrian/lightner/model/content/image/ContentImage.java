@@ -20,7 +20,6 @@ package net.cadrian.lightner.model.content.image;
 import java.awt.image.BufferedImage;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
-import java.io.File;
 import java.io.IOException;
 import java.util.Arrays;
 import java.util.Collection;
@@ -30,6 +29,7 @@ import java.util.Set;
 
 import javax.imageio.ImageIO;
 
+import net.cadrian.lightner.dao.LightnerDataCard;
 import net.cadrian.lightner.model.content.AbstractLightnerCardContent;
 
 /**
@@ -43,8 +43,8 @@ public class ContentImage extends AbstractLightnerCardContent {
 	private BufferedImage question;
 	private BufferedImage answer;
 
-	public ContentImage(final File file) throws IOException {
-		super(file);
+	public ContentImage(final LightnerDataCard data) throws IOException {
+		super(data);
 		question = ImageIO.read(new ByteArrayInputStream(read("question")));
 		answer = ImageIO.read(new ByteArrayInputStream(read("answer")));
 	}

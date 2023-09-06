@@ -17,13 +17,13 @@
  */
 package net.cadrian.lightner.model.content.text;
 
-import java.io.File;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.Set;
 
+import net.cadrian.lightner.dao.LightnerDataCard;
 import net.cadrian.lightner.model.content.AbstractLightnerCardContent;
 
 public class ContentText extends AbstractLightnerCardContent {
@@ -33,7 +33,7 @@ public class ContentText extends AbstractLightnerCardContent {
 	private String question;
 	private String answer;
 
-	public ContentText(final File file) throws IOException {
+	public ContentText(final LightnerDataCard file) throws IOException {
 		super(file);
 		question = new String(read("question"), StandardCharsets.UTF_8);
 		answer = new String(read("answer"), StandardCharsets.UTF_8);

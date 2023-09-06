@@ -15,36 +15,34 @@
  * You should have received a copy of the GNU General Public License
  * along with Lightner.  If not, see <http://www.gnu.org/licenses/>.
  */
-package net.cadrian.lightner.model.content.video;
+package net.cadrian.lightner.dao.file;
 
-import java.io.IOException;
-import java.util.Arrays;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.HashSet;
-import java.util.Set;
+import java.io.File;
+import java.util.Objects;
 
 import net.cadrian.lightner.dao.LightnerDataCard;
-import net.cadrian.lightner.model.content.AbstractLightnerCardContent;
+import net.cadrian.lightner.dao.LightnerDataContent;
 
-public class ContentVideo extends AbstractLightnerCardContent {
+class CardFile implements LightnerDataCard {
 
-	private static final Set<String> SUFFIXES = Collections
-			.unmodifiableSet(new HashSet<>(Arrays.asList(".avi", ".mp4", ".mov")));
+	private final File file;
 
-	public ContentVideo(final LightnerDataCard data) throws IOException {
-		super(data);
-		// TODO Auto-generated constructor stub
+	CardFile(final File file) {
+		this.file = Objects.requireNonNull(file);
 	}
 
 	@Override
-	public void accept(final Visitor v) {
-		v.visitVideo(this);
+	public String getName() {
+		return file.getName();
 	}
 
 	@Override
-	public Collection<String> getFileSuffixes() {
-		return SUFFIXES;
+	public LightnerDataContent getContent(final String name, final boolean create) {
+		final File result = new File(file, name);
+		if (!result.exists() && !create) {
+			return null;
+		}
+		return new ContentFile(result);
 	}
 
 }

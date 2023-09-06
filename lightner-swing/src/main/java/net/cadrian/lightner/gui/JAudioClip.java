@@ -21,7 +21,6 @@ import java.awt.BorderLayout;
 import java.awt.Dimension;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
-import java.io.File;
 import java.io.IOException;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicReference;
@@ -41,6 +40,7 @@ import javafx.application.Platform;
 import javafx.scene.media.Media;
 import javafx.scene.media.MediaPlayer;
 import javafx.util.Duration;
+import net.cadrian.lightner.dao.LightnerDataContent;
 
 class JAudioClip extends JPanel {
 
@@ -131,7 +131,7 @@ class JAudioClip extends JPanel {
 		progressUpdateThread.start();
 	}
 
-	public JAudioClip(final File audio) throws IOException {
+	public JAudioClip(final LightnerDataContent audio) throws IOException {
 		this();
 		open(audio);
 	}
@@ -141,7 +141,7 @@ class JAudioClip extends JPanel {
 		if (!progressUpdateUpdating.get() && thePlayer != null) {
 			progressUpdateSkipping.set(true);
 			SwingUtilities.invokeLater(() -> {
-				Duration duration = thePlayer.getMedia().getDuration();
+				final Duration duration = thePlayer.getMedia().getDuration();
 				thePlayer.seek(duration.multiply(progress.getValue() / (double) progress.getMaximum()));
 				progressUpdateSkipping.set(false);
 			});
@@ -160,25 +160,25 @@ class JAudioClip extends JPanel {
 		player.get().pause();
 	}
 
-	public void open(final File audio) throws IOException {
-		final MediaPlayer player = new MediaPlayer(new Media(audio.toURI().toString()));
-		this.player.set(player);
+	public void open(final LightnerDataContent audio) throws IOException {
+		final MediaPlayer theplayer = new MediaPlayer(new Media(audio.getURI().toString()));
+		player.set(theplayer);
 		progress.setEnabled(true);
 		play.setEnabled(true);
 		pause.setEnabled(false);
 		stop.setEnabled(false);
 
-		player.setOnPlaying(() -> {
+		theplayer.setOnPlaying(() -> {
 			play.setEnabled(false);
 			pause.setEnabled(true);
 			stop.setEnabled(true);
 		});
-		player.setOnPaused(() -> {
+		theplayer.setOnPaused(() -> {
 			play.setEnabled(true);
 			pause.setEnabled(false);
 			stop.setEnabled(true);
 		});
-		player.setOnStopped(() -> {
+		theplayer.setOnStopped(() -> {
 			play.setEnabled(true);
 			pause.setEnabled(false);
 			stop.setEnabled(false);

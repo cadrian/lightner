@@ -17,39 +17,38 @@
  */
 package net.cadrian.lightner.model.content.audio;
 
-import java.io.BufferedInputStream;
 import java.io.ByteArrayOutputStream;
-import java.io.File;
-import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 
+import net.cadrian.lightner.dao.LightnerDataContent;
+
 public class AudioContainer {
 	private final AudioType type;
-	private final File file;
+	private final LightnerDataContent content;
 
-	public AudioContainer(final File file) throws IOException {
-		this.file = file;
-		type = AudioType.get(file.getName());
+	public AudioContainer(final LightnerDataContent content) throws IOException {
+		this.content = content;
+		type = AudioType.get(content.getName());
 		if (type == null) {
-			throw new IOException("Unknown file type: " + file.getName());
+			throw new IOException("Unknown file type: " + content.getName());
 		}
 	}
 
 	byte[] getAudioBytes() throws IOException {
-		final ByteArrayOutputStream o = new ByteArrayOutputStream();
-		try (InputStream in = new BufferedInputStream(new FileInputStream(file))) {
+		final ByteArrayOutputStream result = new ByteArrayOutputStream();
+		try (InputStream in = content.getInputStream()) {
 			final byte[] buffer = new byte[4096];
 			int n;
 			while ((n = in.read(buffer)) >= 0) {
-				o.write(buffer, 0, n);
+				result.write(buffer, 0, n);
 			}
 		}
-		return o.toByteArray();
+		return result.toByteArray();
 	}
 
-	public File getFile() {
-		return file;
+	public LightnerDataContent getContent() {
+		return content;
 	}
 
 	public AudioType getType() {

@@ -17,7 +17,6 @@
  */
 package net.cadrian.lightner.model.content.audio;
 
-import java.io.File;
 import java.io.IOException;
 import java.util.Arrays;
 import java.util.Collection;
@@ -25,6 +24,8 @@ import java.util.Collections;
 import java.util.HashSet;
 import java.util.Set;
 
+import net.cadrian.lightner.dao.LightnerDataCard;
+import net.cadrian.lightner.dao.LightnerDataContent;
 import net.cadrian.lightner.model.content.AbstractLightnerCardContent;
 
 public class ContentAudio extends AbstractLightnerCardContent {
@@ -35,12 +36,12 @@ public class ContentAudio extends AbstractLightnerCardContent {
 	private AudioContainer question;
 	private AudioContainer answer;
 
-	public ContentAudio(final File file) throws IOException {
-		super(file);
-		final File questionFile = getFile("question");
-		question = questionFile == null ? null : new AudioContainer(questionFile);
-		final File answerFile = getFile("answer");
-		answer = answerFile == null ? null : new AudioContainer(answerFile);
+	public ContentAudio(final LightnerDataCard data) throws IOException {
+		super(data);
+		final LightnerDataContent questionContent = getContent("question");
+		question = questionContent == null ? null : new AudioContainer(questionContent);
+		final LightnerDataContent answerContent = getContent("answer");
+		answer = answerContent == null ? null : new AudioContainer(answerContent);
 	}
 
 	@Override

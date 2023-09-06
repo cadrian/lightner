@@ -17,16 +17,13 @@
  */
 package net.cadrian.lightner.model.content;
 
-import java.io.BufferedInputStream;
-import java.io.BufferedOutputStream;
 import java.io.ByteArrayOutputStream;
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 
+import net.cadrian.lightner.dao.LightnerDataCard;
+import net.cadrian.lightner.dao.LightnerDataContent;
 import net.cadrian.lightner.model.LightnerCardContent;
 
 /**
@@ -38,44 +35,44 @@ public abstract class AbstractLightnerCardContent implements LightnerCardContent
 
 	private static final byte[] empty = {};
 
-	protected final File file;
+	protected final LightnerDataCard data;
 
-	protected AbstractLightnerCardContent(final File file) {
-		this.file = file;
+	protected AbstractLightnerCardContent(final LightnerDataCard data) {
+		this.data = data;
 	}
 
-	protected File getFile(final String name) {
+	protected LightnerDataContent getContent(final String name) {
 		for (final String suffix : getFileSuffixes()) {
-			final File f = new File(file, name + suffix);
-			if (f.exists()) {
-				return f;
+			final LightnerDataContent result = data.getContent(name + suffix);
+			if (result != null) {
+				return result;
 			}
 		}
 		return null;
 	}
 
 	protected byte[] read(final String name) throws IOException {
-		final File f = getFile(name);
-		if (f == null) {
+		final LightnerDataContent content = getContent(name);
+		if (content == null) {
 			return empty;
 		}
-		final ByteArrayOutputStream bytes = new ByteArrayOutputStream();
-		try (InputStream in = new BufferedInputStream(new FileInputStream(f))) {
+		final ByteArrayOutputStream result = new ByteArrayOutputStream();
+		try (InputStream in = content.getInputStream()) {
 			final byte[] buffer = new byte[4096];
 			int n;
 			while ((n = in.read(buffer)) >= 0) {
-				bytes.write(buffer, 0, n);
+				result.write(buffer, 0, n);
 			}
 		}
-		return bytes.toByteArray();
+		return result.toByteArray();
 	}
 
-	protected File write(final String name, final byte[] content) throws IOException {
-		final File f = new File(file, name);
-		try (OutputStream o = new BufferedOutputStream(new FileOutputStream(f))) {
+	protected LightnerDataContent write(final String name, final byte[] content) throws IOException {
+		final LightnerDataContent result = data.getContent(name, true);
+		try (OutputStream o = result.getOutputStream()) {
 			o.write(content);
 		}
-		return f;
+		return result;
 	}
 
 }

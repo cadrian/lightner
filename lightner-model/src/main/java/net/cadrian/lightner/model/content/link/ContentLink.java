@@ -17,7 +17,6 @@
  */
 package net.cadrian.lightner.model.content.link;
 
-import java.io.File;
 import java.io.IOException;
 import java.net.URI;
 import java.net.URISyntaxException;
@@ -26,6 +25,7 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.Set;
 
+import net.cadrian.lightner.dao.LightnerDataCard;
 import net.cadrian.lightner.model.content.AbstractLightnerCardContent;
 
 public class ContentLink extends AbstractLightnerCardContent {
@@ -34,8 +34,8 @@ public class ContentLink extends AbstractLightnerCardContent {
 
 	private URI link;
 
-	public ContentLink(final File file) throws IOException {
-		super(file);
+	public ContentLink(final LightnerDataCard data) throws IOException {
+		super(data);
 		try {
 			link = new URI(new String(read("link"), StandardCharsets.UTF_8));
 		} catch (final URISyntaxException e) {

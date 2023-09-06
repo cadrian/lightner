@@ -34,6 +34,8 @@ import javax.swing.JToolBar;
 import javax.swing.SwingConstants;
 import javax.swing.filechooser.FileFilter;
 
+import net.cadrian.lightner.dao.LightnerDataContent;
+import net.cadrian.lightner.dao.file.FileDriver;
 import net.cadrian.lightner.model.content.audio.AudioContainer;
 import net.cadrian.lightner.model.content.audio.AudioType;
 
@@ -126,8 +128,9 @@ class JContentAudioDialog extends AbstractContentDialog {
 		if (returnVal == JFileChooser.APPROVE_OPTION) {
 			final File file = fc.getSelectedFile();
 			try {
-				clip.open(file);
-				audio.set(new AudioContainer(file));
+				final LightnerDataContent content = FileDriver.toContent(file);
+				clip.open(content);
+				audio.set(new AudioContainer(content));
 				lastDirectory.set(file.getParentFile());
 			} catch (final IOException e) {
 				logger.log(Level.SEVERE, e, () -> "Error during audio loading: " + file.getPath());

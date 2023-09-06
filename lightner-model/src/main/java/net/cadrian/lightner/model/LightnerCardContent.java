@@ -17,10 +17,10 @@
  */
 package net.cadrian.lightner.model;
 
-import java.io.File;
 import java.io.IOException;
 import java.util.Collection;
 
+import net.cadrian.lightner.dao.LightnerDataCard;
 import net.cadrian.lightner.model.content.audio.ContentAudio;
 import net.cadrian.lightner.model.content.image.ContentImage;
 import net.cadrian.lightner.model.content.link.ContentLink;
@@ -32,36 +32,36 @@ public interface LightnerCardContent {
 	public enum Type {
 		TEXT {
 			@Override
-			ContentText getContent(final File file) throws IOException {
-				return new ContentText(file);
+			ContentText getContent(final LightnerDataCard data) throws IOException {
+				return new ContentText(data);
 			}
 		},
 		LINK {
 			@Override
-			ContentLink getContent(final File file) throws IOException {
-				return new ContentLink(file);
+			ContentLink getContent(final LightnerDataCard data) throws IOException {
+				return new ContentLink(data);
 			}
 		},
 		IMAGE {
 			@Override
-			ContentImage getContent(final File file) throws IOException {
-				return new ContentImage(file);
+			ContentImage getContent(final LightnerDataCard data) throws IOException {
+				return new ContentImage(data);
 			}
 		},
 		AUDIO {
 			@Override
-			ContentAudio getContent(final File file) throws IOException {
-				return new ContentAudio(file);
+			ContentAudio getContent(final LightnerDataCard data) throws IOException {
+				return new ContentAudio(data);
 			}
 		},
 		VIDEO {
 			@Override
-			ContentVideo getContent(final File file) throws IOException {
-				return new ContentVideo(file);
+			ContentVideo getContent(final LightnerDataCard data) throws IOException {
+				return new ContentVideo(data);
 			}
 		};
 
-		abstract LightnerCardContent getContent(File file) throws IOException;
+		abstract LightnerCardContent getContent(LightnerDataCard data) throws IOException;
 	}
 
 	interface Visitor {
