@@ -24,14 +24,10 @@ import java.awt.GridBagLayout;
 import java.io.File;
 import java.io.IOException;
 import java.util.concurrent.atomic.AtomicBoolean;
+import java.util.concurrent.atomic.AtomicReference;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-import javax.sound.sampled.AudioSystem;
-import javax.sound.sampled.Clip;
-import javax.sound.sampled.LineEvent.Type;
-import javax.sound.sampled.LineUnavailableException;
-import javax.sound.sampled.UnsupportedAudioFileException;
 import javax.swing.BorderFactory;
 import javax.swing.JButton;
 import javax.swing.JLabel;
@@ -41,13 +37,24 @@ import javax.swing.JToolBar;
 import javax.swing.SwingConstants;
 import javax.swing.SwingUtilities;
 
+import javafx.application.Platform;
+import javafx.scene.media.Media;
+import javafx.scene.media.MediaPlayer;
+import javafx.util.Duration;
+
 class JAudioClip extends JPanel {
 
 	private static final long serialVersionUID = 4654628538900133114L;
 	private static final Logger logger = Logger.getLogger(JAudioClip.class.getName());
 	private static final String NO_AUDIO = "(no audio)";
 
-	private Clip clip;
+	static {
+		Platform.startup(() -> {
+		});
+	}
+
+	private final AtomicReference<MediaPlayer> player = new AtomicReference<>();
+
 	private final transient Thread progressUpdateThread;
 	private final AtomicBoolean progressUpdateStop = new AtomicBoolean();
 	private final AtomicBoolean progressUpdateSkipping = new AtomicBoolean();
@@ -100,18 +107,19 @@ class JAudioClip extends JPanel {
 
 		progressUpdateThread = new Thread(() -> {
 			while (!progressUpdateStop.get()) {
-				if (!progressUpdateSkipping.get() && clip != null && clip.isOpen()) {
+				final MediaPlayer thePlayer = player.get();
+				if (!progressUpdateSkipping.get() && thePlayer != null) {
 					progressUpdateUpdating.set(true);
 					SwingUtilities.invokeLater(() -> {
-						final int n = clip.getFrameLength();
-						final int i = clip.getFramePosition();
+						final int n = (int) (thePlayer.getMedia().getDuration().toSeconds() + 0.5);
+						final int i = (int) (thePlayer.getCurrentTime().toSeconds() + 0.5);
 						progress.setMaximum(n);
 						progress.setValue(i);
 						progressUpdateUpdating.set(false);
 					});
 				}
 				try {
-					Thread.sleep(1000);
+					Thread.sleep(1000L);
 				} catch (final InterruptedException e) {
 					logger.log(Level.SEVERE, e, () -> "Unexpected interrupt in audio progress update");
 					Thread.currentThread().interrupt();
@@ -129,63 +137,62 @@ class JAudioClip extends JPanel {
 	}
 
 	private void skip() {
-		if (!progressUpdateUpdating.get() && clip.isOpen()) {
+		final MediaPlayer thePlayer = player.get();
+		if (!progressUpdateUpdating.get() && thePlayer != null) {
 			progressUpdateSkipping.set(true);
 			SwingUtilities.invokeLater(() -> {
-				clip.setFramePosition(progress.getValue());
+				Duration duration = thePlayer.getMedia().getDuration();
+				thePlayer.seek(duration.multiply(progress.getValue() / (double) progress.getMaximum()));
 				progressUpdateSkipping.set(false);
 			});
 		}
 	}
 
 	private void play() {
-		clip.start();
+		player.get().play();
 	}
 
 	private void stop() {
-		clip.stop();
-		clip.setFramePosition(0);
+		player.get().stop();
 	}
 
 	private void pause() {
-		clip.stop();
+		player.get().pause();
 	}
 
 	public void open(final File audio) throws IOException {
-		try {
-			if (clip == null) {
-				clip = AudioSystem.getClip();
-				progress.setEnabled(true);
+		final MediaPlayer player = new MediaPlayer(new Media(audio.toURI().toString()));
+		this.player.set(player);
+		progress.setEnabled(true);
+		play.setEnabled(true);
+		pause.setEnabled(false);
+		stop.setEnabled(false);
 
-				clip.addLineListener(event -> {
-					final Type type = event.getType();
-					if (Type.START.equals(type)) {
-						play.setEnabled(false);
-						pause.setEnabled(true);
-						stop.setEnabled(true);
-					} else if (Type.STOP.equals(type) || Type.OPEN.equals(type)) {
-						play.setEnabled(true);
-						pause.setEnabled(false);
-						stop.setEnabled(clip.getFramePosition() > 0);
-					} else if (Type.CLOSE.equals(type)) {
-						progress.setEnabled(false);
-						play.setEnabled(false);
-						pause.setEnabled(false);
-						stop.setEnabled(false);
-					} else {
-						logger.info(() -> "Unknown type: " + type);
-					}
-				});
-			}
-			clip.open(AudioSystem.getAudioInputStream(audio));
-			title.setText(audio.getName());
-		} catch (final LineUnavailableException | UnsupportedAudioFileException e) {
-			throw new IOException(e);
-		}
+		player.setOnPlaying(() -> {
+			play.setEnabled(false);
+			pause.setEnabled(true);
+			stop.setEnabled(true);
+		});
+		player.setOnPaused(() -> {
+			play.setEnabled(true);
+			pause.setEnabled(false);
+			stop.setEnabled(true);
+		});
+		player.setOnStopped(() -> {
+			play.setEnabled(true);
+			pause.setEnabled(false);
+			stop.setEnabled(false);
+		});
+
+		title.setText(audio.getName());
 	}
 
 	public void close() {
-		clip.close();
+		progress.setEnabled(false);
+		play.setEnabled(false);
+		pause.setEnabled(false);
+		stop.setEnabled(false);
+		player.set(null);
 		title.setText(NO_AUDIO);
 	}
 

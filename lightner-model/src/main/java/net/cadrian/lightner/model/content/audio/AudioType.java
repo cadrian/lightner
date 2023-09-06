@@ -21,7 +21,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 public enum AudioType {
-	WAV("wav"), MP3("mp3"), OGG("ogg");
+	WAV("wav"), MP3("mp3");
 
 	private static final Map<String, AudioType> MAP = new HashMap<>();
 	private String[] suffixes;
