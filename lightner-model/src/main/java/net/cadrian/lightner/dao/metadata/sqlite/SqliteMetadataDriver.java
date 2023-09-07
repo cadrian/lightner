@@ -15,7 +15,7 @@
  * You should have received a copy of the GNU General Public License
  * along with Lightner.  If not, see <http://www.gnu.org/licenses/>.
  */
-package net.cadrian.lightner.dao.sqlite;
+package net.cadrian.lightner.dao.metadata.sqlite;
 
 import java.io.File;
 import java.sql.Connection;
@@ -31,26 +31,25 @@ import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
+import net.cadrian.lightner.dao.LightnerContentDriver;
 import net.cadrian.lightner.dao.LightnerDataCard;
-import net.cadrian.lightner.dao.LightnerDataDriver;
 import net.cadrian.lightner.dao.LightnerDataException;
+import net.cadrian.lightner.dao.metadata.AbstractMetadataDriver;
 
-public class SqliteDriver implements LightnerDataDriver {
+public class SqliteMetadataDriver extends AbstractMetadataDriver {
 
-	private static final Logger logger = Logger.getLogger(SqliteDriver.class.getName());
+	private static final Logger logger = Logger.getLogger(SqliteMetadataDriver.class.getName());
 
-	private final File cards;
 	private final String url;
 
-	public SqliteDriver(final File root) throws LightnerDataException {
-		url = String.format("jdbc:sqlite:%s/metadata.db", root.getPath());
-		cards = new File(root, "cards");
-		if (!root.isDirectory()) {
-			if (root.exists()) {
-				throw new LightnerDataException(root + " already exists and is not a directory");
-			}
-			cards.mkdirs();
+	public SqliteMetadataDriver(final File root, final LightnerContentDriver contentDriver)
+			throws LightnerDataException {
+		super(contentDriver);
+		if (root.exists() && !root.isDirectory()) {
+			throw new LightnerDataException(root + " already exists and is not a directory");
 		}
+		root.mkdirs();
+		url = String.format("jdbc:sqlite:%s/metadata.db", root.getPath());
 		initializeDatabase();
 	}
 
@@ -82,12 +81,20 @@ public class SqliteDriver implements LightnerDataDriver {
 	public Collection<LightnerDataCard> listCards(final int box) throws LightnerDataException {
 		final List<LightnerDataCard> result = new ArrayList<>();
 		try (Connection cnx = DriverManager.getConnection(url);
-				PreparedStatement stmt = cnx.prepareStatement("select ID from CARD where BOX=?")) {
+				PreparedStatement stmt = cnx.prepareStatement("select ID from CARD where BOX=?");
+				PreparedStatement delstmt = cnx.prepareStatement("delete from CARD where ID=?");) {
 			stmt.setInt(1, box);
 			final ResultSet set = stmt.executeQuery();
 			while (set.next()) {
 				final String id = set.getString("ID");
-				result.add(new CardSqlite(new File(cards, id)));
+				final LightnerDataCard card = contentDriver.getCard(id);
+				if (card != null) {
+					result.add(card);
+				} else {
+					// remove stale reference to missing card
+					delstmt.setString(1, id);
+					delstmt.executeUpdate();
+				}
 			}
 		} catch (final SQLException e) {
 			throw new LightnerDataException("Could not list cards", e);
@@ -97,12 +104,7 @@ public class SqliteDriver implements LightnerDataDriver {
 
 	@Override
 	public LightnerDataCard createCard(final String name, final int box) throws LightnerDataException {
-		final File f = new File(cards, name);
-		if (!f.mkdir()) {
-			final String msg = "Could not create " + f.getPath();
-			logger.severe(msg);
-			throw new LightnerDataException(msg);
-		}
+		final LightnerDataCard result = contentDriver.createCard(name);
 		try (Connection cnx = DriverManager.getConnection(url);
 				PreparedStatement stmt = cnx.prepareStatement("insert into CARD (ID, BOX) values (?, ?)")) {
 			stmt.setString(1, name);
@@ -114,7 +116,7 @@ public class SqliteDriver implements LightnerDataDriver {
 		} catch (final SQLException e) {
 			throw new LightnerDataException("Could not update database to create card: " + name, e);
 		}
-		return new CardSqlite(f);
+		return result;
 	}
 
 	@Override

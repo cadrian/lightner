@@ -19,18 +19,17 @@ package net.cadrian.lightner.dao;
 
 import java.io.File;
 import java.lang.reflect.InvocationTargetException;
-import java.util.Collection;
 
-import net.cadrian.lightner.dao.file.FileDriver;
+import net.cadrian.lightner.dao.content.file.FileContentDriver;
 
-public interface LightnerDataDriver {
+public interface LightnerContentDriver {
 
-	public static LightnerDataDriver getDriver(final File root) throws LightnerDataException {
-		final String driverClassName = System.getProperty("lightner.data.driver");
+	static LightnerContentDriver getDriver(final File root) throws LightnerDataException {
+		final String driverClassName = System.getProperty("lightner.content.driver");
 		if (driverClassName != null) {
 			try {
-				final Class<? extends LightnerDataDriver> driverClass = Class.forName(driverClassName)
-						.asSubclass(LightnerDataDriver.class);
+				final Class<? extends LightnerContentDriver> driverClass = Class.forName(driverClassName)
+						.asSubclass(LightnerContentDriver.class);
 				return driverClass.getConstructor(File.class).newInstance(root);
 			} catch (InstantiationException | IllegalAccessException | IllegalArgumentException
 					| InvocationTargetException | NoSuchMethodException | SecurityException
@@ -38,13 +37,11 @@ public interface LightnerDataDriver {
 				throw new LightnerDataException(e);
 			}
 		}
-		return new FileDriver(root);
+		return new FileContentDriver(root);
 	}
 
-	public Collection<LightnerDataCard> listCards(int box) throws LightnerDataException;
+	LightnerDataCard getCard(String name);
 
-	public LightnerDataCard createCard(String name, int box) throws LightnerDataException;
-
-	public boolean moveCard(LightnerDataCard card, int fromBox, int toBox);
+	LightnerDataCard createCard(String name) throws LightnerDataException;
 
 }

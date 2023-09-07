@@ -26,7 +26,7 @@ public enum ImageType {
 	private static final Map<String, ImageType> MAP = new HashMap<>();
 	private String[] suffixes;
 
-	private ImageType(final String... suffixes) {
+	ImageType(final String... suffixes) {
 		this.suffixes = suffixes;
 	}
 

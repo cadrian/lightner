@@ -15,19 +15,22 @@
  * You should have received a copy of the GNU General Public License
  * along with Lightner.  If not, see <http://www.gnu.org/licenses/>.
  */
-package net.cadrian.lightner.dao.sqlite;
+package net.cadrian.lightner.dao.content.file;
 
 import java.io.File;
 import java.util.Objects;
 
 import net.cadrian.lightner.dao.LightnerDataCard;
 import net.cadrian.lightner.dao.LightnerDataContent;
+import net.cadrian.lightner.dao.LightnerDataException;
 
-class CardSqlite implements LightnerDataCard {
+class CardFile implements LightnerDataCard {
 
 	private final File file;
+	private final FileContentDriver driver;
 
-	CardSqlite(final File file) {
+	CardFile(final FileContentDriver driver, final File file) {
+		this.driver = driver;
 		this.file = Objects.requireNonNull(file);
 	}
 
@@ -42,7 +45,12 @@ class CardSqlite implements LightnerDataCard {
 		if (!result.exists() && !create) {
 			return null;
 		}
-		return new ContentSqlite(result, this);
+		return new ContentFile(result, this);
+	}
+
+	@Override
+	public void delete() throws LightnerDataException {
+		driver.delete(file);
 	}
 
 }

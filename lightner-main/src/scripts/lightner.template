@@ -6,5 +6,5 @@ cd "$HOME/.lightner.d"
 exec >> log
 date -R
 exec java \
-     -Dlightner.data.driver=net.cadrian.lightner.dao.sqlite.SqliteDriver \
+     -Dlightner.data.driver=net.cadrian.lightner.dao.metadata.sqlite.SqliteMetadataDriver \
      -classpath /usr/share/maven-repo/net/cadrian/lightner/main/debian/*:%CLASSPATH% net.cadrian.lightner.Main

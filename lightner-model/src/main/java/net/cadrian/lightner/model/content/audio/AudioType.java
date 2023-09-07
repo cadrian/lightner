@@ -26,7 +26,7 @@ public enum AudioType {
 	private static final Map<String, AudioType> MAP = new HashMap<>();
 	private String[] suffixes;
 
-	private AudioType(final String... suffixes) {
+	AudioType(final String... suffixes) {
 		this.suffixes = suffixes;
 	}
 

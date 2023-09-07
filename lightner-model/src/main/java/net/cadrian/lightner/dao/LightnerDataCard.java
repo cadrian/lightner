@@ -27,4 +27,6 @@ public interface LightnerDataCard {
 
 	LightnerDataContent getContent(String name, boolean create);
 
+	void delete() throws LightnerDataException;
+
 }

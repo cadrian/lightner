@@ -15,7 +15,7 @@
  * You should have received a copy of the GNU General Public License
  * along with Lightner.  If not, see <http://www.gnu.org/licenses/>.
  */
-package net.cadrian.lightner.dao.sqlite;
+package net.cadrian.lightner.dao.content.file;
 
 import java.io.BufferedInputStream;
 import java.io.BufferedOutputStream;
@@ -32,20 +32,20 @@ import java.util.logging.Logger;
 
 import net.cadrian.lightner.dao.LightnerDataContent;
 
-class ContentSqlite implements LightnerDataContent {
+class ContentFile implements LightnerDataContent {
 
-	private static final Logger logger = Logger.getLogger(ContentSqlite.class.getName());
+	private static final Logger logger = Logger.getLogger(ContentFile.class.getName());
 
 	private final File file;
-	private final CardSqlite card;
+	private final CardFile card;
 
-	public ContentSqlite(final File file, final CardSqlite card) {
+	public ContentFile(final File file, final CardFile card) {
 		this.file = file;
 		this.card = card;
 	}
 
 	@Override
-	public CardSqlite getCard() {
+	public CardFile getCard() {
 		return card;
 	}
 

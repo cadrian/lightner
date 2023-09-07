@@ -9,3 +9,4 @@ pkg
 .sonarlint
 LightnerBox
 .codetogether.ignore
+*~

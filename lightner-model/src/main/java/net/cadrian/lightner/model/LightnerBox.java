@@ -25,18 +25,18 @@ import java.util.List;
 import java.util.logging.Logger;
 
 import net.cadrian.lightner.dao.LightnerDataCard;
-import net.cadrian.lightner.dao.LightnerDataDriver;
+import net.cadrian.lightner.dao.LightnerMetadataDriver;
 
 public class LightnerBox {
 
 	private static final Logger logger = Logger.getLogger(LightnerBox.class.getName());
 
-	private final LightnerDataDriver dao;
+	private final LightnerMetadataDriver dao;
 	private final LightnerDay day = new LightnerDay();
 
 	public LightnerBox(final File root) throws IOException {
 		logger.info(() -> "Lightner Box root: " + root.getAbsolutePath());
-		dao = LightnerDataDriver.getDriver(root);
+		dao = LightnerMetadataDriver.getDriver(root);
 	}
 
 	public LightnerDay getDay() {

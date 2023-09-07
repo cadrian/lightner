@@ -15,34 +15,17 @@
  * You should have received a copy of the GNU General Public License
  * along with Lightner.  If not, see <http://www.gnu.org/licenses/>.
  */
-package net.cadrian.lightner.dao.file;
+package net.cadrian.lightner.dao.metadata;
 
-import java.io.File;
-import java.util.Objects;
+import net.cadrian.lightner.dao.LightnerContentDriver;
+import net.cadrian.lightner.dao.LightnerMetadataDriver;
 
-import net.cadrian.lightner.dao.LightnerDataCard;
-import net.cadrian.lightner.dao.LightnerDataContent;
+public abstract class AbstractMetadataDriver implements LightnerMetadataDriver {
 
-class CardFile implements LightnerDataCard {
+	protected final LightnerContentDriver contentDriver;
 
-	private final File file;
-
-	CardFile(final File file) {
-		this.file = Objects.requireNonNull(file);
-	}
-
-	@Override
-	public String getName() {
-		return file.getName();
-	}
-
-	@Override
-	public LightnerDataContent getContent(final String name, final boolean create) {
-		final File result = new File(file, name);
-		if (!result.exists() && !create) {
-			return null;
-		}
-		return new ContentFile(result, this);
+	protected AbstractMetadataDriver(final LightnerContentDriver contentDriver) {
+		this.contentDriver = contentDriver;
 	}
 
 }
