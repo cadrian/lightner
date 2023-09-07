@@ -17,29 +17,9 @@
  */
 package net.cadrian.lightner.dao;
 
-import java.io.File;
-import java.lang.reflect.InvocationTargetException;
 import java.util.Collection;
 
-import net.cadrian.lightner.dao.metadata.file.FileMetadataDriver;
-
 public interface LightnerMetadataDriver {
-
-	static LightnerMetadataDriver getDriver(final File root) throws LightnerDataException {
-		final LightnerContentDriver contentDriver = LightnerContentDriver.getDriver(root);
-		final String driverClassName = System.getProperty("lightner.data.driver");
-		if (driverClassName == null) {
-			return new FileMetadataDriver(root, contentDriver);
-		}
-		try {
-			final Class<? extends LightnerMetadataDriver> driverClass = Class.forName(driverClassName)
-					.asSubclass(LightnerMetadataDriver.class);
-			return driverClass.getConstructor(File.class, LightnerContentDriver.class).newInstance(root, contentDriver);
-		} catch (InstantiationException | IllegalAccessException | IllegalArgumentException | InvocationTargetException
-				| NoSuchMethodException | SecurityException | ClassNotFoundException e) {
-			throw new LightnerDataException(e);
-		}
-	}
 
 	Collection<LightnerDataCard> listCards(final int box) throws LightnerDataException;
 

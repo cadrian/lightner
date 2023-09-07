@@ -15,56 +15,41 @@
  * You should have received a copy of the GNU General Public License
  * along with Lightner.  If not, see <http://www.gnu.org/licenses/>.
  */
-package net.cadrian.lightner.dao.content.file;
+package net.cadrian.lightner.dao.content.memory;
 
 import java.io.File;
-import java.util.logging.Logger;
+import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
 
 import net.cadrian.lightner.dao.LightnerDataCard;
 import net.cadrian.lightner.dao.LightnerDataException;
 import net.cadrian.lightner.dao.content.AbstractContentDriver;
 
-public class FileContentDriver extends AbstractContentDriver {
+public class MemoryContentDriver extends AbstractContentDriver {
 
-	private static final Logger logger = Logger.getLogger(FileContentDriver.class.getName());
+	private final Map<String, CardMemory> cards = new ConcurrentHashMap<>();
 
-	private final File cards;
-
-	public FileContentDriver(final File root) throws LightnerDataException {
+	public MemoryContentDriver(final File root) throws LightnerDataException {
 		super(root);
-		cards = new File(root, "cards");
-		cards.mkdirs();
 	}
 
 	@Override
 	public LightnerDataCard getCard(final String name) {
-		final File cardFile = new File(cards, name);
-		if (cardFile.isDirectory()) {
-			return new CardFile(this, cardFile);
-		}
-		return null;
+		return cards.get(name);
 	}
 
 	@Override
 	public LightnerDataCard createCard(final String name) throws LightnerDataException {
-		final File f = new File(cards, name);
-		if (!f.mkdir()) {
-			final String msg = "Could not create " + f.getPath();
-			logger.severe(msg);
-			throw new LightnerDataException(msg);
+		final CardMemory newcard = new CardMemory(this, name);
+		final CardMemory result = cards.computeIfAbsent(name, k -> newcard);
+		if (result != newcard) {
+			throw new LightnerDataException("Duplicate card: " + name);
 		}
-		return new CardFile(this, f);
+		return result;
 	}
 
-	void delete(final File file) throws LightnerDataException {
-		if (file.isDirectory()) {
-			for (final File f : file.listFiles()) {
-				delete(f);
-			}
-		}
-		if (!file.delete()) {
-			throw new LightnerDataException("Could not delete " + file.getPath());
-		}
+	void delete(final String name) {
+		cards.remove(name);
 	}
 
 }

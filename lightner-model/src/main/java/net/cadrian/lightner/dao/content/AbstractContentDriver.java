@@ -15,12 +15,22 @@
  * You should have received a copy of the GNU General Public License
  * along with Lightner.  If not, see <http://www.gnu.org/licenses/>.
  */
-package net.cadrian.lightner.dao;
+package net.cadrian.lightner.dao.content;
 
-public interface LightnerContentDriver {
+import java.io.File;
 
-	LightnerDataCard getCard(String name);
+import net.cadrian.lightner.dao.LightnerContentDriver;
+import net.cadrian.lightner.dao.LightnerDataException;
 
-	LightnerDataCard createCard(String name) throws LightnerDataException;
+public abstract class AbstractContentDriver implements LightnerContentDriver {
+
+	protected final File root;
+
+	protected AbstractContentDriver(final File root) throws LightnerDataException {
+		if (root.exists() && !root.isDirectory()) {
+			throw new LightnerDataException(root + " already exists and is not a directory");
+		}
+		this.root = root;
+	}
 
 }

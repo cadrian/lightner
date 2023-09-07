@@ -39,9 +39,9 @@ public class ContentAudio extends AbstractLightnerCardContent {
 	public ContentAudio(final LightnerDataCard data, final String title) throws IOException {
 		super(data, title);
 		final LightnerDataContent questionContent = getContent("question");
-		question = questionContent == null ? null : new AudioContainer(questionContent);
+		question = questionContent == null ? null : new AudioContainerContent(questionContent);
 		final LightnerDataContent answerContent = getContent("answer");
-		answer = answerContent == null ? null : new AudioContainer(answerContent);
+		answer = answerContent == null ? null : new AudioContainerContent(answerContent);
 	}
 
 	@Override
@@ -59,7 +59,7 @@ public class ContentAudio extends AbstractLightnerCardContent {
 	}
 
 	public void setQuestion(final AudioContainer question) throws IOException {
-		this.question = new AudioContainer(
+		this.question = new AudioContainerContent(
 				write("question." + question.getType().getSuffix(), question.getAudioBytes()));
 	}
 
@@ -68,7 +68,8 @@ public class ContentAudio extends AbstractLightnerCardContent {
 	}
 
 	public void setAnswer(final AudioContainer answer) throws IOException {
-		this.answer = new AudioContainer(write("answer." + answer.getType().getSuffix(), answer.getAudioBytes()));
+		this.answer = new AudioContainerContent(
+				write("answer." + answer.getType().getSuffix(), answer.getAudioBytes()));
 	}
 
 }

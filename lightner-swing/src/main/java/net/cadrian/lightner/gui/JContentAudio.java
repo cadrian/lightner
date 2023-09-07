@@ -33,8 +33,8 @@ class JContentAudio extends JPanel {
 	public JContentAudio(final ContentAudio audio) throws IOException {
 		super(new GridBagLayout());
 
-		final JAudioClip question = new JAudioClip(audio.getQuestion().getContent());
-		final JAudioClip answer = new JAudioClip(audio.getAnswer().getContent());
+		final JAudioClip question = new JAudioClip(audio.getQuestion());
+		final JAudioClip answer = new JAudioClip(audio.getAnswer());
 
 		final JPanel content = new JPanel(new GridBagLayout());
 		final GridBagConstraints c = new GridBagConstraints();

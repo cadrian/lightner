@@ -17,42 +17,17 @@
  */
 package net.cadrian.lightner.model.content.audio;
 
-import java.io.ByteArrayOutputStream;
 import java.io.IOException;
-import java.io.InputStream;
+import java.net.URI;
 
-import net.cadrian.lightner.dao.LightnerDataContent;
+public interface AudioContainer {
 
-public class AudioContainer {
-	private final AudioType type;
-	private final LightnerDataContent content;
+	byte[] getAudioBytes() throws IOException;
 
-	public AudioContainer(final LightnerDataContent content) throws IOException {
-		this.content = content;
-		type = AudioType.get(content.getName());
-		if (type == null) {
-			throw new IOException("Unknown file type: " + content.getName());
-		}
-	}
+	AudioType getType();
 
-	byte[] getAudioBytes() throws IOException {
-		final ByteArrayOutputStream result = new ByteArrayOutputStream();
-		try (InputStream in = content.getInputStream()) {
-			final byte[] buffer = new byte[4096];
-			int n;
-			while ((n = in.read(buffer)) >= 0) {
-				result.write(buffer, 0, n);
-			}
-		}
-		return result.toByteArray();
-	}
+	String getName();
 
-	public LightnerDataContent getContent() {
-		return content;
-	}
-
-	public AudioType getType() {
-		return type;
-	}
+	URI getURI();
 
 }

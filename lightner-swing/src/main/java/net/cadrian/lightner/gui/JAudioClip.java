@@ -21,7 +21,9 @@ import java.awt.BorderLayout;
 import java.awt.Dimension;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
+import java.io.File;
 import java.io.IOException;
+import java.net.URI;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicReference;
 import java.util.logging.Level;
@@ -40,7 +42,7 @@ import javafx.application.Platform;
 import javafx.scene.media.Media;
 import javafx.scene.media.MediaPlayer;
 import javafx.util.Duration;
-import net.cadrian.lightner.dao.LightnerDataContent;
+import net.cadrian.lightner.model.content.audio.AudioContainer;
 
 class JAudioClip extends JPanel {
 
@@ -131,7 +133,7 @@ class JAudioClip extends JPanel {
 		progressUpdateThread.start();
 	}
 
-	public JAudioClip(final LightnerDataContent audio) throws IOException {
+	public JAudioClip(final AudioContainer audio) throws IOException {
 		this();
 		open(audio);
 	}
@@ -160,8 +162,16 @@ class JAudioClip extends JPanel {
 		player.get().pause();
 	}
 
-	public void open(final LightnerDataContent audio) throws IOException {
-		final MediaPlayer theplayer = new MediaPlayer(new Media(audio.getURI().toString()));
+	public void open(final AudioContainer audio) {
+		open0(audio.getURI(), audio.getName());
+	}
+
+	public void open(final File file) {
+		open0(file.toURI(), file.getName());
+	}
+
+	private void open0(final URI uri, final String name) {
+		final MediaPlayer theplayer = new MediaPlayer(new Media(uri.toString()));
 		player.set(theplayer);
 		progress.setEnabled(true);
 		play.setEnabled(true);
@@ -184,7 +194,7 @@ class JAudioClip extends JPanel {
 			stop.setEnabled(false);
 		});
 
-		title.setText(audio.getName());
+		title.setText(name);
 	}
 
 	public void close() {
