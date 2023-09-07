@@ -104,7 +104,7 @@ public class SqliteDriver implements LightnerDataDriver {
 			throw new LightnerDataException(msg);
 		}
 		try (Connection cnx = DriverManager.getConnection(url);
-				PreparedStatement stmt = cnx.prepareStatement("insert into BOX (ID, BOX) values (?, ?)")) {
+				PreparedStatement stmt = cnx.prepareStatement("insert into CARD (ID, BOX) values (?, ?)")) {
 			stmt.setString(1, name);
 			stmt.setInt(2, box);
 			final int n = stmt.executeUpdate();

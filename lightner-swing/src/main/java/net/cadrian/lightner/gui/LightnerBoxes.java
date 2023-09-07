@@ -34,6 +34,7 @@ import java.util.logging.Logger;
 
 import javax.swing.JButton;
 import javax.swing.JComponent;
+import javax.swing.JLabel;
 import javax.swing.JMenuItem;
 import javax.swing.JPanel;
 import javax.swing.JPopupMenu;
@@ -42,6 +43,7 @@ import javax.swing.JToolBar;
 import net.cadrian.lightner.model.LightnerBox;
 import net.cadrian.lightner.model.LightnerCard;
 import net.cadrian.lightner.model.LightnerCardContent;
+import net.cadrian.lightner.model.LightnerCardType;
 import net.cadrian.lightner.model.content.audio.ContentAudio;
 import net.cadrian.lightner.model.content.image.ContentImage;
 import net.cadrian.lightner.model.content.link.ContentLink;
@@ -57,6 +59,7 @@ class LightnerBoxes extends JPanel {
 	private final transient Content content = new Content();
 	private final transient LightnerBox box;
 
+	private final JLabel cardDescription;
 	private final JButton previous;
 	private final JButton next;
 	private final JButton check;
@@ -72,6 +75,9 @@ class LightnerBoxes extends JPanel {
 
 		this.owner = owner;
 		this.box = box;
+
+		cardDescription = new JLabel();
+		add(cardDescription, BorderLayout.NORTH);
 
 		cards = new JPanel(new CardLayout());
 		add(cards, BorderLayout.CENTER);
@@ -168,22 +174,18 @@ class LightnerBoxes extends JPanel {
 	private void validateCard(final ActionEvent ae) {
 		final LightnerCard card = content.get();
 		if (card != null) {
-			try {
-				final int boxNumber = card.getBoxNumber();
-				final boolean updated;
-				if (boxNumber == 7) {
-					updated = card.update(boxNumber, "Card succeded");
-				} else {
-					updated = card.update(boxNumber + 1, "Card succeded");
-				}
-				if (updated) {
-					logger.severe(() -> "Checked card " + card.getName());
-					content.hide();
-				} else {
-					logger.severe(() -> "Could not check card " + card.getName());
-				}
-			} catch (final IOException e) {
-				logger.log(Level.SEVERE, e, () -> "Could not check card " + card.getName());
+			final int boxNumber = card.getBoxNumber();
+			final boolean updated;
+			if (boxNumber == 7) {
+				updated = card.update(boxNumber, "Card succeded");
+			} else {
+				updated = card.update(boxNumber + 1, "Card succeded");
+			}
+			if (updated) {
+				logger.severe(() -> "Checked card " + card.getName());
+				content.hide();
+			} else {
+				logger.severe(() -> "Could not check card " + card.getName());
 			}
 		}
 	}
@@ -191,24 +193,20 @@ class LightnerBoxes extends JPanel {
 	private void failCard(final ActionEvent ae) {
 		final LightnerCard card = content.get();
 		if (card != null) {
-			try {
-				final boolean updated = card.update(1, "Card failed");
-				if (updated) {
-					logger.severe(() -> "Failed card " + card.getName());
-					content.hide();
-				} else {
-					logger.severe(() -> "Could not fail card " + card.getName());
-				}
-			} catch (final IOException e) {
-				logger.log(Level.SEVERE, e, () -> "Could not fail card " + card.getName());
+			final boolean updated = card.update(1, "Card failed");
+			if (updated) {
+				logger.severe(() -> "Failed card " + card.getName());
+				content.hide();
+			} else {
+				logger.severe(() -> "Could not fail card " + card.getName());
 			}
 		}
 	}
 
 	private void addTextCard(final ActionEvent ae) {
-		final JContentTextDialog dialog = new JContentTextDialog(owner, (id, q, a) -> {
+		final JContentTextDialog dialog = new JContentTextDialog(owner, (id, t, q, a) -> {
 			try {
-				final LightnerCard card = box.newCard(id.toString(), LightnerCardContent.Type.TEXT);
+				final LightnerCard card = box.newCard(id.toString(), LightnerCardType.TEXT, t);
 				final ContentText text = (ContentText) card.getContent();
 				text.setQuestion(q);
 				text.setAnswer(a);
@@ -221,9 +219,9 @@ class LightnerBoxes extends JPanel {
 	}
 
 	private void addLinkCard(final ActionEvent ae) {
-		final JContentLinkDialog dialog = new JContentLinkDialog(owner, (id, l) -> {
+		final JContentLinkDialog dialog = new JContentLinkDialog(owner, (id, t, l) -> {
 			try {
-				final LightnerCard card = box.newCard(id.toString(), LightnerCardContent.Type.LINK);
+				final LightnerCard card = box.newCard(id.toString(), LightnerCardType.LINK, t);
 				final ContentLink link = (ContentLink) card.getContent();
 				link.setLink(l);
 				content.add(card);
@@ -235,9 +233,9 @@ class LightnerBoxes extends JPanel {
 	}
 
 	private void addImageCard(final ActionEvent ae) {
-		final JContentImageDialog dialog = new JContentImageDialog(owner, (id, q, qt, a, at) -> {
+		final JContentImageDialog dialog = new JContentImageDialog(owner, (id, t, q, qt, a, at) -> {
 			try {
-				final LightnerCard card = box.newCard(id.toString(), LightnerCardContent.Type.IMAGE);
+				final LightnerCard card = box.newCard(id.toString(), LightnerCardType.IMAGE, t);
 				final ContentImage image = (ContentImage) card.getContent();
 				image.setQuestion(q, qt);
 				image.setAnswer(a, at);
@@ -250,9 +248,9 @@ class LightnerBoxes extends JPanel {
 	}
 
 	private void addAudioCard(final ActionEvent ae) {
-		final JContentAudioDialog dialog = new JContentAudioDialog(owner, (id, q, a) -> {
+		final JContentAudioDialog dialog = new JContentAudioDialog(owner, (id, t, q, a) -> {
 			try {
-				final LightnerCard card = box.newCard(id.toString(), LightnerCardContent.Type.AUDIO);
+				final LightnerCard card = box.newCard(id.toString(), LightnerCardType.AUDIO, t);
 				final ContentAudio audio = (ContentAudio) card.getContent();
 				audio.setQuestion(q);
 				audio.setAnswer(a);
@@ -347,6 +345,7 @@ class LightnerBoxes extends JPanel {
 				final CardLayout cl = (CardLayout) (cards.getLayout());
 				cl.show(cards, name);
 				cards.revalidate();
+				cardDescription.setText("%s (box %d)".formatted(card.getTitle(), card.getBoxNumber()));
 			}
 			return card;
 		}

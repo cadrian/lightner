@@ -34,8 +34,8 @@ public class ContentLink extends AbstractLightnerCardContent {
 
 	private URI link;
 
-	public ContentLink(final LightnerDataCard data) throws IOException {
-		super(data);
+	public ContentLink(final LightnerDataCard data, final String title) throws IOException {
+		super(data, title);
 		try {
 			link = new URI(new String(read("link"), StandardCharsets.UTF_8));
 		} catch (final URISyntaxException e) {

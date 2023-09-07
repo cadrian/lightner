@@ -36,9 +36,16 @@ public abstract class AbstractLightnerCardContent implements LightnerCardContent
 	private static final byte[] empty = {};
 
 	protected final LightnerDataCard data;
+	private final String title;
 
-	protected AbstractLightnerCardContent(final LightnerDataCard data) {
+	protected AbstractLightnerCardContent(final LightnerDataCard data, final String title) {
 		this.data = data;
+		this.title = title;
+	}
+
+	@Override
+	public String getTitle() {
+		return title;
 	}
 
 	protected LightnerDataContent getContent(final String name) {

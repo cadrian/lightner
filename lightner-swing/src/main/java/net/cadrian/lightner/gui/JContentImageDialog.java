@@ -52,7 +52,7 @@ class JContentImageDialog extends AbstractContentDialog {
 
 	@FunctionalInterface
 	interface Creator {
-		void create(UUID id, BufferedImage question, ImageType questionType, BufferedImage answer,
+		void create(UUID id, String title, BufferedImage question, ImageType questionType, BufferedImage answer,
 				ImageType answerType);
 	}
 
@@ -98,12 +98,12 @@ class JContentImageDialog extends AbstractContentDialog {
 		inputPane.add(questionPane);
 		inputPane.add(answerPane);
 		contentPane.add(inputPane, BorderLayout.CENTER);
-
+		contentPane.add(titlePane, BorderLayout.NORTH);
 		contentPane.add(tools, BorderLayout.SOUTH);
 
 		validate.addActionListener(ae0 -> {
 			setVisible(false);
-			creator.create(id, question.get(), questionType.get(), answer.get(), answerType.get());
+			creator.create(id, title.getText(), question.get(), questionType.get(), answer.get(), answerType.get());
 		});
 
 		setTitle("Image: " + id);

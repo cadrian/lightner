@@ -37,9 +37,16 @@ class ContentSqlite implements LightnerDataContent {
 	private static final Logger logger = Logger.getLogger(ContentSqlite.class.getName());
 
 	private final File file;
+	private final CardSqlite card;
 
-	public ContentSqlite(final File file) {
+	public ContentSqlite(final File file, final CardSqlite card) {
 		this.file = file;
+		this.card = card;
+	}
+
+	@Override
+	public CardSqlite getCard() {
+		return card;
 	}
 
 	@Override

@@ -33,8 +33,8 @@ public class ContentText extends AbstractLightnerCardContent {
 	private String question;
 	private String answer;
 
-	public ContentText(final LightnerDataCard file) throws IOException {
-		super(file);
+	public ContentText(final LightnerDataCard file, final String title) throws IOException {
+		super(file, title);
 		question = new String(read("question"), StandardCharsets.UTF_8);
 		answer = new String(read("answer"), StandardCharsets.UTF_8);
 	}

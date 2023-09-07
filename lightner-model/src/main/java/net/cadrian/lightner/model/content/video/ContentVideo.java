@@ -32,8 +32,8 @@ public class ContentVideo extends AbstractLightnerCardContent {
 	private static final Set<String> SUFFIXES = Collections
 			.unmodifiableSet(new HashSet<>(Arrays.asList(".avi", ".mp4", ".mov")));
 
-	public ContentVideo(final LightnerDataCard data) throws IOException {
-		super(data);
+	public ContentVideo(final LightnerDataCard data, final String title) throws IOException {
+		super(data, title);
 		// TODO Auto-generated constructor stub
 	}
 

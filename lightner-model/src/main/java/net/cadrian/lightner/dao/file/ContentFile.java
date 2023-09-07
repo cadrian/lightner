@@ -37,9 +37,16 @@ class ContentFile implements LightnerDataContent {
 	private static final Logger logger = Logger.getLogger(ContentFile.class.getName());
 
 	private final File file;
+	private final CardFile card;
 
-	public ContentFile(final File file) {
+	public ContentFile(final File file, final CardFile card) {
 		this.file = file;
+		this.card = card;
+	}
+
+	@Override
+	public CardFile getCard() {
+		return card;
 	}
 
 	@Override

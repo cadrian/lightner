@@ -17,31 +17,46 @@
  */
 package net.cadrian.lightner.model;
 
-import java.util.Collection;
+import java.io.IOException;
 
+import net.cadrian.lightner.dao.LightnerDataCard;
 import net.cadrian.lightner.model.content.audio.ContentAudio;
 import net.cadrian.lightner.model.content.image.ContentImage;
 import net.cadrian.lightner.model.content.link.ContentLink;
 import net.cadrian.lightner.model.content.text.ContentText;
 import net.cadrian.lightner.model.content.video.ContentVideo;
 
-public interface LightnerCardContent {
+public enum LightnerCardType {
+	TEXT {
+		@Override
+		ContentText getContent(final LightnerDataCard data, final String title) throws IOException {
+			return new ContentText(data, title);
+		}
+	},
+	LINK {
+		@Override
+		ContentLink getContent(final LightnerDataCard data, final String title) throws IOException {
+			return new ContentLink(data, title);
+		}
+	},
+	IMAGE {
+		@Override
+		ContentImage getContent(final LightnerDataCard data, final String title) throws IOException {
+			return new ContentImage(data, title);
+		}
+	},
+	AUDIO {
+		@Override
+		ContentAudio getContent(final LightnerDataCard data, final String title) throws IOException {
+			return new ContentAudio(data, title);
+		}
+	},
+	VIDEO {
+		@Override
+		ContentVideo getContent(final LightnerDataCard data, final String title) throws IOException {
+			return new ContentVideo(data, title);
+		}
+	};
 
-	interface Visitor {
-		void visitText(ContentText t);
-
-		void visitLink(ContentLink l);
-
-		void visitImage(ContentImage i);
-
-		void visitAudio(ContentAudio a);
-
-		void visitVideo(ContentVideo v);
-	}
-
-	Collection<String> getFileSuffixes();
-
-	String getTitle();
-
-	void accept(Visitor v);
+	abstract LightnerCardContent getContent(LightnerDataCard data, final String title) throws IOException;
 }

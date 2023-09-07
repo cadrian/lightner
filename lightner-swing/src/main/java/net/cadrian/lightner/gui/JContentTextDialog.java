@@ -32,7 +32,7 @@ class JContentTextDialog extends AbstractContentDialog {
 
 	@FunctionalInterface
 	interface Creator {
-		void create(UUID id, String question, String answer);
+		void create(UUID id, String title, String question, String answer);
 	}
 
 	public JContentTextDialog(final Lightner owner, final Creator creator) {
@@ -56,12 +56,12 @@ class JContentTextDialog extends AbstractContentDialog {
 		inputPane.add(questionPane);
 		inputPane.add(answerPane);
 		contentPane.add(inputPane, BorderLayout.CENTER);
-
+		contentPane.add(titlePane, BorderLayout.NORTH);
 		contentPane.add(tools, BorderLayout.SOUTH);
 
 		validate.addActionListener(ae0 -> {
 			setVisible(false);
-			creator.create(id, question.getText(), answer.getText());
+			creator.create(id, title.getText(), question.getText(), answer.getText());
 		});
 
 		setTitle("Text: " + id);

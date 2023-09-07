@@ -34,7 +34,7 @@ public class FileDriver implements LightnerDataDriver {
 	private static final Logger logger = Logger.getLogger(FileDriver.class.getName());
 
 	public static LightnerDataContent toContent(final File file) {
-		return new ContentFile(file);
+		return new ContentFile(file, null);
 	}
 
 	private final File root;

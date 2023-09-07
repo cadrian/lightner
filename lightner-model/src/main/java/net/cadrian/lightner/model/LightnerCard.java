@@ -32,24 +32,31 @@ public class LightnerCard {
 	private static final Logger logger = Logger.getLogger(LightnerCard.class.getName());
 
 	private final LightnerBox box;
-	private final LightnerDataCard data;
-	private final LightnerCardContent.Type type;
+	private final String title;
+	private final LightnerCardType type;
 	private final LightnerCardContent content;
+	private final LightnerDataCard data;
 
 	private LightnerDate lastChange;
 	private int boxNumber;
 
-	LightnerCard(final LightnerBox box, final LightnerCardContent.Type type, final LightnerDataCard data)
+	LightnerCard(final LightnerBox box, final LightnerCardType type, final String title, final LightnerDataCard data)
 			throws IOException {
 		this.box = box;
-		this.data = data;
+		this.title = title;
 		this.type = type;
+		this.data = data;
 		lastChange = new LightnerDate("19741215");
 		boxNumber = 1;
-		content = type.getContent(data);
+		content = type.getContent(data, title);
 
-		final LightnerDataContent typeFile = data.getContent("type", true);
-		try (final PrintStream o = new PrintStream(typeFile.getOutputStream())) {
+		final LightnerDataContent titleContent = data.getContent("title", true);
+		try (final PrintStream o = new PrintStream(titleContent.getOutputStream())) {
+			o.print(title);
+		}
+
+		final LightnerDataContent typeContent = data.getContent("type", true);
+		try (final PrintStream o = new PrintStream(typeContent.getOutputStream())) {
 			o.print(type.toString());
 		}
 
@@ -62,11 +69,12 @@ public class LightnerCard {
 		this.boxNumber = boxNumber;
 		lastChange = getLast(data);
 		type = getType(data);
-		content = type.getContent(data);
+		title = getTitle(data);
+		content = type.getContent(data, title);
 		updateHistory("loaded", false);
 	}
 
-	private void updateHistory(final String comment, final boolean create) throws IOException {
+	private void updateHistory(final String comment, final boolean create) {
 		final LightnerDataContent lastData = data.getContent("last", create);
 		try (final PrintStream o = new PrintStream(lastData.getOutputStream())) {
 			o.print(lastChange.toString());
@@ -82,22 +90,37 @@ public class LightnerCard {
 
 	private static LightnerDate getLast(final LightnerDataCard data) throws IOException {
 		final LightnerDataContent lastData = data.getContent("last");
-		try (InputStream in = lastData.getInputStream()) {
-			final byte[] buffer = new byte[lastData.length()];
-			in.read(buffer);
-			return new LightnerDate(new String(buffer).trim());
-		}
+		final byte[] buffer = read(lastData);
+		return new LightnerDate(new String(buffer).trim());
 	}
 
-	private static LightnerCardContent.Type getType(final LightnerDataCard data) throws IOException {
-		final LightnerDataContent typeData = data.getContent("type");
-		try (InputStream in = typeData.getInputStream()) {
-			final byte[] buffer = new byte[typeData.length()];
-			in.read(buffer);
-			return LightnerCardContent.Type.valueOf(new String(buffer).trim());
+	private static String getTitle(final LightnerDataCard data) throws IOException {
+		final LightnerDataContent titleData = data.getContent("title");
+		final byte[] buffer = read(titleData);
+		return new String(buffer).trim();
+	}
+
+	private static LightnerCardType getType(final LightnerDataCard data) throws IOException {
+		try {
+			final LightnerDataContent typeData = data.getContent("type");
+			final byte[] buffer = read(typeData);
+			return LightnerCardType.valueOf(new String(buffer).trim());
 		} catch (final IllegalArgumentException e) {
 			throw new IOException(e);
 		}
+	}
+
+	private static byte[] read(final LightnerDataContent lastData) throws IOException {
+		final int length = lastData.length();
+		final byte[] buffer = new byte[length];
+		try (InputStream in = lastData.getInputStream()) {
+			final int n = in.read(buffer);
+			if (n < length) {
+				logger.severe(() -> "Truncated input (%d<%d): %s/%s".formatted(n, length, lastData.getCard().getName(),
+						lastData.getName()));
+			}
+		}
+		return buffer;
 	}
 
 	LightnerDataCard getData() {
@@ -108,11 +131,15 @@ public class LightnerCard {
 		return data.getName();
 	}
 
+	public String getTitle() {
+		return title;
+	}
+
 	public LightnerDate getLastChange() {
 		return lastChange;
 	}
 
-	public LightnerCardContent.Type getType() {
+	public LightnerCardType getType() {
 		return type;
 	}
 
@@ -124,7 +151,7 @@ public class LightnerCard {
 		return content;
 	}
 
-	public boolean update(final int boxNumber, final String comment) throws IOException {
+	public boolean update(final int boxNumber, final String comment) {
 		if (!box.move(this, this.boxNumber, boxNumber)) {
 			logger.severe(() -> "Could not move box " + getName() + " from " + this.boxNumber + " to " + boxNumber);
 			return false;

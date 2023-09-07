@@ -31,7 +31,7 @@ class JContentLinkDialog extends AbstractContentDialog {
 
 	@FunctionalInterface
 	interface Creator {
-		void create(UUID id, String link);
+		void create(UUID id, String title, String link);
 	}
 
 	public JContentLinkDialog(final Lightner owner, final Creator creator) {
@@ -48,12 +48,12 @@ class JContentLinkDialog extends AbstractContentDialog {
 		c.weightx = 1.0;
 		linkPane.add(link, c);
 		contentPane.add(linkPane, BorderLayout.CENTER);
-
+		contentPane.add(titlePane, BorderLayout.NORTH);
 		contentPane.add(tools, BorderLayout.SOUTH);
 
 		validate.addActionListener(ae0 -> {
 			setVisible(false);
-			creator.create(id, link.getText());
+			creator.create(id, title.getText(), link.getText());
 		});
 
 		setTitle("Link: " + id);

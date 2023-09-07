@@ -36,8 +36,8 @@ public class ContentAudio extends AbstractLightnerCardContent {
 	private AudioContainer question;
 	private AudioContainer answer;
 
-	public ContentAudio(final LightnerDataCard data) throws IOException {
-		super(data);
+	public ContentAudio(final LightnerDataCard data, final String title) throws IOException {
+		super(data, title);
 		final LightnerDataContent questionContent = getContent("question");
 		question = questionContent == null ? null : new AudioContainer(questionContent);
 		final LightnerDataContent answerContent = getContent("answer");

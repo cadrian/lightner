@@ -62,8 +62,8 @@ public class LightnerBox {
 		return result;
 	}
 
-	public LightnerCard newCard(final String name, final LightnerCardContent.Type type) throws IOException {
-		return new LightnerCard(this, type, dao.createCard(name, 1));
+	public LightnerCard newCard(final String name, final LightnerCardType type, final String title) throws IOException {
+		return new LightnerCard(this, type, title, dao.createCard(name, 1));
 	}
 
 	boolean move(final LightnerCard card, final int fromBox, final int toBox) {

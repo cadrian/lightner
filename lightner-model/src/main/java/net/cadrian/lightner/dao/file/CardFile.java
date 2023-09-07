@@ -42,7 +42,7 @@ class CardFile implements LightnerDataCard {
 		if (!result.exists() && !create) {
 			return null;
 		}
-		return new ContentFile(result);
+		return new ContentFile(result, this);
 	}
 
 }

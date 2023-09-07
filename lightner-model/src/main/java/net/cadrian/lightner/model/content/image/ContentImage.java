@@ -43,8 +43,8 @@ public class ContentImage extends AbstractLightnerCardContent {
 	private BufferedImage question;
 	private BufferedImage answer;
 
-	public ContentImage(final LightnerDataCard data) throws IOException {
-		super(data);
+	public ContentImage(final LightnerDataCard data, final String title) throws IOException {
+		super(data, title);
 		question = ImageIO.read(new ByteArrayInputStream(read("question")));
 		answer = ImageIO.read(new ByteArrayInputStream(read("answer")));
 	}

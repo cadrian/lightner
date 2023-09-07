@@ -25,6 +25,8 @@ public interface LightnerDataContent {
 
 	String getName();
 
+	LightnerDataCard getCard();
+
 	URI getURI();
 
 	default OutputStream getOutputStream() {

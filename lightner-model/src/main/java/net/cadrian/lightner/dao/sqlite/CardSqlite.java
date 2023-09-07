@@ -42,7 +42,7 @@ class CardSqlite implements LightnerDataCard {
 		if (!result.exists() && !create) {
 			return null;
 		}
-		return new ContentSqlite(result);
+		return new ContentSqlite(result, this);
 	}
 
 }

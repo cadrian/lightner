@@ -47,7 +47,7 @@ class JContentAudioDialog extends AbstractContentDialog {
 
 	@FunctionalInterface
 	interface Creator {
-		void create(UUID id, AudioContainer question, AudioContainer answer);
+		void create(UUID id, String title, AudioContainer question, AudioContainer answer);
 	}
 
 	private static final AtomicReference<File> lastDirectory = new AtomicReference<>();
@@ -90,12 +90,12 @@ class JContentAudioDialog extends AbstractContentDialog {
 		inputPane.add(questionPane);
 		inputPane.add(answerPane);
 		contentPane.add(inputPane, BorderLayout.CENTER);
-
+		contentPane.add(titlePane, BorderLayout.NORTH);
 		contentPane.add(tools, BorderLayout.SOUTH);
 
 		validate.addActionListener(ae0 -> {
 			setVisible(false);
-			creator.create(id, question.get(), answer.get());
+			creator.create(id, title.getText(), question.get(), answer.get());
 		});
 
 		setTitle("Image: " + id);
