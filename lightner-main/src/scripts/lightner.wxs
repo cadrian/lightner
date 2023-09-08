@@ -1,0 +1,21 @@
+<?xml version='1.0' encoding='UTF8'?>
+<Wix xmlns='http://schemas.microsoft.com/wix/2006/wi'>
+  <Product Name='Lightner' Id='67520112-BA0B-4B7F-926E-97D57A0DF2AA' UpgradeCode='85781494-EA76-4E22-AC2B-BD7D0C2AE318'
+           Language='1033' Codepage='1252' Version='1.0.0' Manufacturer='Cyril Adrian'>
+
+    <Media Id='1' Cabinet='Sample.cab' EmbedCab='yes' DiskPrompt="CD-ROM #1" />
+    <Property Id='DiskPrompt' Value="Acme's Foobar 1.0 Installation [1]" />
+
+    <Directory Id='TARGETDIR' Name='SourceDir'>
+      <Directory Id='ProgramFilesFolder' Name='PFiles'>
+        <Directory Id='INSTALLDIR' Name='Lightner' />
+      </Directory>
+    </Directory>
+
+    <Feature Id='Complete' Level='1'>
+      <ComponentGroupRef Id='lightner_main' />
+      <ComponentGroupRef Id='lightner_jdk' />
+    </Feature>
+
+  </Product>
+</Wix>
