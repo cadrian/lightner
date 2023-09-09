@@ -30,6 +30,7 @@ import java.util.Set;
 import javax.imageio.ImageIO;
 
 import net.cadrian.lightner.dao.LightnerDataCard;
+import net.cadrian.lightner.model.LightnerModelException;
 import net.cadrian.lightner.model.content.AbstractLightnerCardContent;
 
 /**
@@ -43,20 +44,28 @@ public class ContentImage extends AbstractLightnerCardContent {
 	private BufferedImage question;
 	private BufferedImage answer;
 
-	public ContentImage(final LightnerDataCard data, final String title) throws IOException {
+	public ContentImage(final LightnerDataCard data, final String title) throws LightnerModelException {
 		super(data, title);
-		question = ImageIO.read(new ByteArrayInputStream(read("question")));
-		answer = ImageIO.read(new ByteArrayInputStream(read("answer")));
+		try {
+			question = ImageIO.read(new ByteArrayInputStream(read("question")));
+			answer = ImageIO.read(new ByteArrayInputStream(read("answer")));
+		} catch (final IOException e) {
+			throw new LightnerModelException(e);
+		}
 	}
 
 	public BufferedImage getQuestion() {
 		return question;
 	}
 
-	public void setQuestion(final BufferedImage question, final ImageType type) throws IOException {
+	public void setQuestion(final BufferedImage question, final ImageType type) throws LightnerModelException {
 		this.question = question;
 		final ByteArrayOutputStream o = new ByteArrayOutputStream();
-		ImageIO.write(question, type.getSuffix(), o);
+		try {
+			ImageIO.write(question, type.getSuffix(), o);
+		} catch (final IOException e) {
+			throw new LightnerModelException(e);
+		}
 		write("question." + type.getSuffix(), o.toByteArray());
 	}
 
@@ -64,10 +73,14 @@ public class ContentImage extends AbstractLightnerCardContent {
 		return answer;
 	}
 
-	public void setAnswer(final BufferedImage answer, final ImageType type) throws IOException {
+	public void setAnswer(final BufferedImage answer, final ImageType type) throws LightnerModelException {
 		this.answer = answer;
 		final ByteArrayOutputStream o = new ByteArrayOutputStream();
-		ImageIO.write(answer, type.getSuffix(), o);
+		try {
+			ImageIO.write(answer, type.getSuffix(), o);
+		} catch (final IOException e) {
+			throw new LightnerModelException(e);
+		}
 		write("answer." + type.getSuffix(), o.toByteArray());
 	}
 

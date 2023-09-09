@@ -17,7 +17,6 @@
  */
 package net.cadrian.lightner.model.content.audio;
 
-import java.io.IOException;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
@@ -26,6 +25,7 @@ import java.util.Set;
 
 import net.cadrian.lightner.dao.LightnerDataCard;
 import net.cadrian.lightner.dao.LightnerDataContent;
+import net.cadrian.lightner.model.LightnerModelException;
 import net.cadrian.lightner.model.content.AbstractLightnerCardContent;
 
 public class ContentAudio extends AbstractLightnerCardContent {
@@ -36,7 +36,7 @@ public class ContentAudio extends AbstractLightnerCardContent {
 	private AudioContainer question;
 	private AudioContainer answer;
 
-	public ContentAudio(final LightnerDataCard data, final String title) throws IOException {
+	public ContentAudio(final LightnerDataCard data, final String title) throws LightnerModelException {
 		super(data, title);
 		final LightnerDataContent questionContent = getContent("question");
 		question = questionContent == null ? null : new AudioContainerContent(questionContent);
@@ -58,7 +58,7 @@ public class ContentAudio extends AbstractLightnerCardContent {
 		return question;
 	}
 
-	public void setQuestion(final AudioContainer question) throws IOException {
+	public void setQuestion(final AudioContainer question) throws LightnerModelException {
 		this.question = new AudioContainerContent(
 				write("question." + question.getType().getSuffix(), question.getAudioBytes()));
 	}
@@ -67,7 +67,7 @@ public class ContentAudio extends AbstractLightnerCardContent {
 		return answer;
 	}
 
-	public void setAnswer(final AudioContainer answer) throws IOException {
+	public void setAnswer(final AudioContainer answer) throws LightnerModelException {
 		this.answer = new AudioContainerContent(
 				write("answer." + answer.getType().getSuffix(), answer.getAudioBytes()));
 	}

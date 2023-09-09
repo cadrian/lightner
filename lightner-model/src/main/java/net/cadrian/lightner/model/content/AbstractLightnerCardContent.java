@@ -25,6 +25,7 @@ import java.io.OutputStream;
 import net.cadrian.lightner.dao.LightnerDataCard;
 import net.cadrian.lightner.dao.LightnerDataContent;
 import net.cadrian.lightner.model.LightnerCardContent;
+import net.cadrian.lightner.model.LightnerModelException;
 
 /**
  * Common file manipulation methods
@@ -58,7 +59,7 @@ public abstract class AbstractLightnerCardContent implements LightnerCardContent
 		return null;
 	}
 
-	protected byte[] read(final String name) throws IOException {
+	protected byte[] read(final String name) throws LightnerModelException {
 		final LightnerDataContent content = getContent(name);
 		if (content == null) {
 			return empty;
@@ -70,14 +71,18 @@ public abstract class AbstractLightnerCardContent implements LightnerCardContent
 			while ((n = in.read(buffer)) >= 0) {
 				result.write(buffer, 0, n);
 			}
+		} catch (final IOException e) {
+			throw new LightnerModelException(e);
 		}
 		return result.toByteArray();
 	}
 
-	protected LightnerDataContent write(final String name, final byte[] content) throws IOException {
+	protected LightnerDataContent write(final String name, final byte[] content) throws LightnerModelException {
 		final LightnerDataContent result = data.getContent(name, true);
 		try (OutputStream o = result.getOutputStream()) {
 			o.write(content);
+		} catch (final IOException e) {
+			throw new LightnerModelException(e);
 		}
 		return result;
 	}

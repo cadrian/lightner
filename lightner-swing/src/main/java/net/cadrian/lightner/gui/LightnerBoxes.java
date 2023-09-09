@@ -40,10 +40,12 @@ import javax.swing.JPanel;
 import javax.swing.JPopupMenu;
 import javax.swing.JToolBar;
 
+import net.cadrian.lightner.face.LightnerFaceException;
 import net.cadrian.lightner.model.LightnerBox;
 import net.cadrian.lightner.model.LightnerCard;
 import net.cadrian.lightner.model.LightnerCardContent;
 import net.cadrian.lightner.model.LightnerCardType;
+import net.cadrian.lightner.model.LightnerModelException;
 import net.cadrian.lightner.model.content.audio.ContentAudio;
 import net.cadrian.lightner.model.content.image.ContentImage;
 import net.cadrian.lightner.model.content.link.ContentLink;
@@ -70,7 +72,7 @@ class LightnerBoxes extends JPanel {
 	private final JButton about;
 	private final JPanel cards;
 
-	LightnerBoxes(final Lightner owner, final LightnerBox box) throws IOException {
+	LightnerBoxes(final Lightner owner, final LightnerBox box) throws LightnerFaceException {
 		super(new BorderLayout());
 
 		this.owner = owner;
@@ -151,11 +153,14 @@ class LightnerBoxes extends JPanel {
 		previous.addActionListener(this::previousCard);
 		check.addActionListener(this::validateCard);
 		fail.addActionListener(this::failCard);
-
-		final List<LightnerCard> theCards = new ArrayList<>(box.getCards());
-		Collections.shuffle(theCards, new SecureRandom());
-		for (final LightnerCard aCard : theCards) {
-			content.add(aCard);
+		try {
+			final List<LightnerCard> theCards = new ArrayList<>(box.getCards());
+			Collections.shuffle(theCards, new SecureRandom());
+			for (final LightnerCard aCard : theCards) {
+				content.add(aCard);
+			}
+		} catch (final LightnerModelException e) {
+			throw new LightnerFaceException(e);
 		}
 	}
 
@@ -211,7 +216,7 @@ class LightnerBoxes extends JPanel {
 				text.setQuestion(q);
 				text.setAnswer(a);
 				content.add(card);
-			} catch (final IOException e) {
+			} catch (final LightnerModelException e) {
 				logger.log(Level.SEVERE, e, () -> "Failed to create text card: " + id);
 			}
 		});
@@ -225,7 +230,7 @@ class LightnerBoxes extends JPanel {
 				final ContentLink link = (ContentLink) card.getContent();
 				link.setLink(l);
 				content.add(card);
-			} catch (final IOException e) {
+			} catch (final LightnerModelException e) {
 				logger.log(Level.SEVERE, e, () -> "Failed to create link card: " + id);
 			}
 		});
@@ -240,7 +245,7 @@ class LightnerBoxes extends JPanel {
 				image.setQuestion(q, qt);
 				image.setAnswer(a, at);
 				content.add(card);
-			} catch (final IOException e) {
+			} catch (final LightnerModelException e) {
 				logger.log(Level.SEVERE, e, () -> "Failed to create image card: " + id);
 			}
 		});
@@ -255,7 +260,7 @@ class LightnerBoxes extends JPanel {
 				audio.setQuestion(q);
 				audio.setAnswer(a);
 				content.add(card);
-			} catch (final IOException e) {
+			} catch (final LightnerModelException e) {
 				logger.log(Level.SEVERE, e, () -> "Failed to create audio card: " + id);
 			}
 		});

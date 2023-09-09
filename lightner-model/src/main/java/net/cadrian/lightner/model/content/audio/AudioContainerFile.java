@@ -25,6 +25,8 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.net.URI;
 
+import net.cadrian.lightner.model.LightnerModelException;
+
 public class AudioContainerFile implements AudioContainer {
 	private final AudioType type;
 	private final File content;
@@ -38,7 +40,7 @@ public class AudioContainerFile implements AudioContainer {
 	}
 
 	@Override
-	public byte[] getAudioBytes() throws IOException {
+	public byte[] getAudioBytes() throws LightnerModelException {
 		final ByteArrayOutputStream result = new ByteArrayOutputStream();
 		try (InputStream in = new BufferedInputStream(new FileInputStream(content))) {
 			final byte[] buffer = new byte[4096];
@@ -46,6 +48,8 @@ public class AudioContainerFile implements AudioContainer {
 			while ((n = in.read(buffer)) >= 0) {
 				result.write(buffer, 0, n);
 			}
+		} catch (final IOException e) {
+			throw new LightnerModelException(e);
 		}
 		return result.toByteArray();
 	}

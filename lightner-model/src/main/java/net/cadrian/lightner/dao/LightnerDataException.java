@@ -17,9 +17,7 @@
  */
 package net.cadrian.lightner.dao;
 
-import java.io.IOException;
-
-public class LightnerDataException extends IOException {
+public class LightnerDataException extends Exception {
 
 	private static final long serialVersionUID = 1401622248736643734L;
 

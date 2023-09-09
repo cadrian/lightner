@@ -17,12 +17,21 @@
  */
 package net.cadrian.lightner;
 
-import net.cadrian.lightner.gui.Lightner;
+import java.util.concurrent.atomic.AtomicReference;
+
+import net.cadrian.lightner.face.LightnerFaceException;
 
 public class Main {
 
-	public static void main(final String[] args) throws Exception {
-		new Lightner("LightnerBox").setVisible(true);
+	private static final AtomicReference<LightnerFaceFactory> factory = new AtomicReference<>(
+			new DefaultLightnerFaceFactory());
+
+	public static void main(final String... args) throws LightnerFaceException {
+		factory.get().createFace().start();
+	}
+
+	static void setFactory(final LightnerFaceFactory factory) {
+		Main.factory.set(factory);
 	}
 
 }

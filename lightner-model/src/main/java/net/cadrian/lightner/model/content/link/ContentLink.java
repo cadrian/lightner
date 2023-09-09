@@ -17,7 +17,6 @@
  */
 package net.cadrian.lightner.model.content.link;
 
-import java.io.IOException;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.nio.charset.StandardCharsets;
@@ -26,6 +25,7 @@ import java.util.Collections;
 import java.util.Set;
 
 import net.cadrian.lightner.dao.LightnerDataCard;
+import net.cadrian.lightner.model.LightnerModelException;
 import net.cadrian.lightner.model.content.AbstractLightnerCardContent;
 
 public class ContentLink extends AbstractLightnerCardContent {
@@ -34,20 +34,20 @@ public class ContentLink extends AbstractLightnerCardContent {
 
 	private URI link;
 
-	public ContentLink(final LightnerDataCard data, final String title) throws IOException {
+	public ContentLink(final LightnerDataCard data, final String title) throws LightnerModelException {
 		super(data, title);
 		try {
 			link = new URI(new String(read("link"), StandardCharsets.UTF_8));
 		} catch (final URISyntaxException e) {
-			throw new IOException(e);
+			throw new LightnerModelException(e);
 		}
 	}
 
-	public void setLink(final String link) throws IOException {
+	public void setLink(final String link) throws LightnerModelException {
 		try {
 			this.link = new URI(link);
 		} catch (final URISyntaxException e) {
-			throw new IOException(e);
+			throw new LightnerModelException(e);
 		}
 		write("link.lnk", link.getBytes(StandardCharsets.UTF_8));
 	}

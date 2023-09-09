@@ -15,20 +15,24 @@
  * You should have received a copy of the GNU General Public License
  * along with Lightner.  If not, see <http://www.gnu.org/licenses/>.
  */
-package net.cadrian.lightner.model.content.audio;
+package net.cadrian.lightner;
 
-import java.net.URI;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
-import net.cadrian.lightner.model.LightnerModelException;
+import java.util.concurrent.atomic.AtomicBoolean;
 
-public interface AudioContainer {
+import org.junit.jupiter.api.Test;
 
-	byte[] getAudioBytes() throws LightnerModelException;
+import net.cadrian.lightner.face.LightnerFaceException;
 
-	AudioType getType();
+class MainTest {
 
-	String getName();
-
-	URI getURI();
+	@Test
+	void testMain() throws LightnerFaceException {
+		final AtomicBoolean started = new AtomicBoolean();
+		Main.setFactory(()->()->started.set(true));
+		Main.main();
+		assertTrue(started.get());
+	}
 
 }

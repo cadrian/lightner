@@ -41,7 +41,7 @@ public class LightnerCard {
 	private int boxNumber;
 
 	LightnerCard(final LightnerBox box, final LightnerCardType type, final String title, final LightnerDataCard data)
-			throws IOException {
+			throws LightnerModelException {
 		this.box = box;
 		this.title = title;
 		this.type = type;
@@ -63,7 +63,8 @@ public class LightnerCard {
 		updateHistory("created", true);
 	}
 
-	LightnerCard(final LightnerBox box, final int boxNumber, final LightnerDataCard data) throws IOException {
+	LightnerCard(final LightnerBox box, final int boxNumber, final LightnerDataCard data)
+			throws LightnerModelException {
 		this.box = box;
 		this.data = data;
 		this.boxNumber = boxNumber;
@@ -88,29 +89,29 @@ public class LightnerCard {
 		}
 	}
 
-	private static LightnerDate getLast(final LightnerDataCard data) throws IOException {
+	private static LightnerDate getLast(final LightnerDataCard data) throws LightnerModelException {
 		final LightnerDataContent lastData = data.getContent("last");
 		final byte[] buffer = read(lastData);
 		return new LightnerDate(new String(buffer).trim());
 	}
 
-	private static String getTitle(final LightnerDataCard data) throws IOException {
+	private static String getTitle(final LightnerDataCard data) throws LightnerModelException {
 		final LightnerDataContent titleData = data.getContent("title");
 		final byte[] buffer = read(titleData);
 		return new String(buffer).trim();
 	}
 
-	private static LightnerCardType getType(final LightnerDataCard data) throws IOException {
+	private static LightnerCardType getType(final LightnerDataCard data) throws LightnerModelException {
 		try {
 			final LightnerDataContent typeData = data.getContent("type");
 			final byte[] buffer = read(typeData);
 			return LightnerCardType.valueOf(new String(buffer).trim());
 		} catch (final IllegalArgumentException e) {
-			throw new IOException(e);
+			throw new LightnerModelException(e);
 		}
 	}
 
-	private static byte[] read(final LightnerDataContent lastData) throws IOException {
+	private static byte[] read(final LightnerDataContent lastData) throws LightnerModelException {
 		final int length = lastData.length();
 		final byte[] buffer = new byte[length];
 		try (InputStream in = lastData.getInputStream()) {
@@ -119,6 +120,8 @@ public class LightnerCard {
 				logger.severe(() -> "Truncated input (%d<%d): %s/%s".formatted(n, length, lastData.getCard().getName(),
 						lastData.getName()));
 			}
+		} catch (final IOException e) {
+			throw new LightnerModelException(e);
 		}
 		return buffer;
 	}

@@ -15,20 +15,11 @@
  * You should have received a copy of the GNU General Public License
  * along with Lightner.  If not, see <http://www.gnu.org/licenses/>.
  */
-package net.cadrian.lightner.model.content.audio;
+package net.cadrian.lightner.face;
 
-import java.net.URI;
+@FunctionalInterface
+public interface LightnerFace {
 
-import net.cadrian.lightner.model.LightnerModelException;
-
-public interface AudioContainer {
-
-	byte[] getAudioBytes() throws LightnerModelException;
-
-	AudioType getType();
-
-	String getName();
-
-	URI getURI();
+	void start();
 
 }

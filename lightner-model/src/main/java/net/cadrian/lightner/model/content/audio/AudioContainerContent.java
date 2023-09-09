@@ -23,21 +23,22 @@ import java.io.InputStream;
 import java.net.URI;
 
 import net.cadrian.lightner.dao.LightnerDataContent;
+import net.cadrian.lightner.model.LightnerModelException;
 
 public class AudioContainerContent implements AudioContainer {
 	private final AudioType type;
 	private final LightnerDataContent content;
 
-	public AudioContainerContent(final LightnerDataContent content) throws IOException {
+	public AudioContainerContent(final LightnerDataContent content) throws LightnerModelException {
 		this.content = content;
 		type = AudioType.get(content.getName());
 		if (type == null) {
-			throw new IOException("Unknown file type: " + content.getName());
+			throw new LightnerModelException("Unknown file type: " + content.getName());
 		}
 	}
 
 	@Override
-	public byte[] getAudioBytes() throws IOException {
+	public byte[] getAudioBytes() throws LightnerModelException {
 		final ByteArrayOutputStream result = new ByteArrayOutputStream();
 		try (InputStream in = content.getInputStream()) {
 			final byte[] buffer = new byte[4096];
@@ -45,6 +46,8 @@ public class AudioContainerContent implements AudioContainer {
 			while ((n = in.read(buffer)) >= 0) {
 				result.write(buffer, 0, n);
 			}
+		} catch (final IOException e) {
+			throw new LightnerModelException(e);
 		}
 		return result.toByteArray();
 	}

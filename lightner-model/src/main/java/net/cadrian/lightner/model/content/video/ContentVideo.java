@@ -17,7 +17,6 @@
  */
 package net.cadrian.lightner.model.content.video;
 
-import java.io.IOException;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
@@ -25,6 +24,7 @@ import java.util.HashSet;
 import java.util.Set;
 
 import net.cadrian.lightner.dao.LightnerDataCard;
+import net.cadrian.lightner.model.LightnerModelException;
 import net.cadrian.lightner.model.content.AbstractLightnerCardContent;
 
 public class ContentVideo extends AbstractLightnerCardContent {
@@ -32,7 +32,7 @@ public class ContentVideo extends AbstractLightnerCardContent {
 	private static final Set<String> SUFFIXES = Collections
 			.unmodifiableSet(new HashSet<>(Arrays.asList(".avi", ".mp4", ".mov")));
 
-	public ContentVideo(final LightnerDataCard data, final String title) throws IOException {
+	public ContentVideo(final LightnerDataCard data, final String title) throws LightnerModelException {
 		super(data, title);
 		// TODO Auto-generated constructor stub
 	}

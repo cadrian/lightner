@@ -20,7 +20,6 @@ package net.cadrian.lightner.gui;
 import java.awt.BorderLayout;
 import java.awt.GridLayout;
 import java.io.File;
-import java.io.IOException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -32,17 +31,24 @@ import javax.swing.UIManager.LookAndFeelInfo;
 import javax.swing.UnsupportedLookAndFeelException;
 import javax.swing.border.BevelBorder;
 
+import net.cadrian.lightner.face.LightnerFace;
+import net.cadrian.lightner.face.LightnerFaceException;
 import net.cadrian.lightner.model.LightnerBox;
+import net.cadrian.lightner.model.LightnerModelException;
 
-public class Lightner extends JFrame {
+public class Lightner extends JFrame implements LightnerFace {
 
 	private static final long serialVersionUID = -3335601051895440497L;
 	private static final Logger logger = Logger.getLogger(Lightner.class.getName());
 
 	private final transient LightnerBox box;
 
-	public Lightner(final String boxPath) throws IOException {
-		box = new LightnerBox(new File(boxPath));
+	public Lightner(final String boxPath) throws LightnerFaceException {
+		try {
+			box = new LightnerBox(new File(boxPath));
+		} catch (final LightnerModelException e) {
+			throw new LightnerFaceException(e);
+		}
 		setSize(800, 600);
 		setTitle("Lightner Box");
 		setLookAndFeel(false);
@@ -85,6 +91,11 @@ public class Lightner extends JFrame {
 				| UnsupportedLookAndFeelException e) {
 			logger.log(Level.SEVERE, e, () -> "Could not load L&F");
 		}
+	}
+
+	@Override
+	public void start() {
+		setVisible(true);
 	}
 
 }

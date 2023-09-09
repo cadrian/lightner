@@ -18,7 +18,6 @@
 package net.cadrian.lightner.model;
 
 import java.io.File;
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
@@ -26,6 +25,7 @@ import java.util.logging.Logger;
 
 import net.cadrian.lightner.dao.DataDrivers;
 import net.cadrian.lightner.dao.LightnerDataCard;
+import net.cadrian.lightner.dao.LightnerDataException;
 import net.cadrian.lightner.dao.LightnerMetadataDriver;
 
 public class LightnerBox {
@@ -35,36 +35,50 @@ public class LightnerBox {
 	private final LightnerMetadataDriver dao;
 	private final LightnerDay day = new LightnerDay();
 
-	public LightnerBox(final File root) throws IOException {
+	public LightnerBox(final File root) throws LightnerModelException {
 		logger.info(() -> "Lightner Box root: " + root.getAbsolutePath());
-		dao = DataDrivers.getMetadataDriver(root);
+		try {
+			dao = DataDrivers.getMetadataDriver(root);
+		} catch (final LightnerDataException e) {
+			throw new LightnerModelException(e);
+		}
 	}
 
 	public LightnerDay getDay() {
 		return day;
 	}
 
-	public Collection<LightnerCard> getCards() throws IOException {
+	public Collection<LightnerCard> getCards() throws LightnerModelException {
 		final List<LightnerCard> result = new ArrayList<>();
 		final LightnerDate now = new LightnerDate();
 		for (final int box : day.getBoxes()) {
-			for (final LightnerDataCard cardFile : dao.listCards(box)) {
-				logger.info(() -> "Adding card: " + cardFile.getName());
-				final LightnerCard card = new LightnerCard(this, box, cardFile);
-				if (now.compareTo(card.getLastChange()) > 0) {
-					result.add(card);
-				} else {
-					logger.info(() -> "Not displaying card, already done today: " + card.getName() + " ("
-							+ card.getLastChange().toPrettyString() + " / " + now.toPrettyString() + ")");
+			try {
+				final Collection<LightnerDataCard> cards = dao.listCards(box);
+				for (final LightnerDataCard cardFile : cards) {
+					logger.info(() -> "Adding card: " + cardFile.getName());
+					final LightnerCard card = new LightnerCard(this, box, cardFile);
+					if (now.compareTo(card.getLastChange()) > 0) {
+						result.add(card);
+					} else {
+						logger.info(() -> "Not displaying card, already done today: " + card.getName() + " ("
+								+ card.getLastChange().toPrettyString() + " / " + now.toPrettyString() + ")");
+					}
 				}
+			} catch (final LightnerDataException e) {
+				throw new LightnerModelException(e);
 			}
 		}
 		logger.info(() -> "Cards: " + result);
 		return result;
 	}
 
-	public LightnerCard newCard(final String name, final LightnerCardType type, final String title) throws IOException {
-		return new LightnerCard(this, type, title, dao.createCard(name, 1));
+	public LightnerCard newCard(final String name, final LightnerCardType type, final String title)
+			throws LightnerModelException {
+		try {
+			return new LightnerCard(this, type, title, dao.createCard(name, 1));
+		} catch (final LightnerDataException e) {
+			throw new LightnerModelException(e);
+		}
 	}
 
 	boolean move(final LightnerCard card, final int fromBox, final int toBox) {
