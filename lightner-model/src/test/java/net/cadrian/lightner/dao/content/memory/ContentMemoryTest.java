@@ -15,61 +15,49 @@
  * You should have received a copy of the GNU General Public License
  * along with Lightner.  If not, see <http://www.gnu.org/licenses/>.
  */
-package net.cadrian.lightner.dao.content.file;
+package net.cadrian.lightner.dao.content.memory;
 
+import static org.junit.jupiter.api.Assertions.assertArrayEquals;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertSame;
-import static org.junit.jupiter.api.Assertions.assertTrue;
 
-import java.io.File;
-import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.PrintStream;
+import java.net.URI;
+import java.net.URISyntaxException;
 import java.util.UUID;
 
-import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 import net.cadrian.lightner.dao.LightnerDataException;
 
-class ContentFileTest extends AbstractTest {
+class ContentMemoryTest extends AbstractTest {
 
 	private String randomName;
-	private CardFile card;
-	private File contentFile;
-	private ContentFile content;
+	private CardMemory card;
+	private ContentMemory content;
 
 	@BeforeEach
 	void prepareContent() throws LightnerDataException {
 		randomName = "content-" + UUID.randomUUID();
-		card = new CardFile(new FileContentDriver(tmpdir), new File(tmpdir, "card"));
-		contentFile = new File(tmpdir, randomName);
-		content = new ContentFile(contentFile, card);
-	}
-
-	@AfterEach
-	void removeContent() throws LightnerDataException {
-		if (contentFile.exists()) {
-			deleteFiles(contentFile);
-		}
+		card = new CardMemory(new MemoryContentDriver(null), "card");
+		content = new ContentMemory(card, randomName);
 	}
 
 	@Test
-	void testMetadata() {
+	void testMetadata() throws URISyntaxException {
 		assertSame(card, content.getCard());
 		assertEquals(randomName, content.getName());
-		assertEquals(contentFile.toURI(), content.getURI());
+		assertEquals(new URI("memory:card/%s".formatted(randomName)), content.getURI());
 	}
 
 	@Test
 	void testContentRead() throws IOException {
 		final String data = UUID.randomUUID().toString();
 
-		try (PrintStream o = new PrintStream(contentFile)) {
-			o.print(data);
-		}
+		content.setContent(data.getBytes());
 
 		try (InputStream in = content.getInputStream()) {
 			final byte[] b = new byte[1024];
@@ -80,21 +68,14 @@ class ContentFileTest extends AbstractTest {
 	}
 
 	@Test
-	void testContentWrite() throws IOException {
+	void testContentWrite() {
 		final String data = UUID.randomUUID().toString();
 
 		try (PrintStream o = new PrintStream(content.getOutputStream())) {
 			o.print(data);
 		}
 
-		assertTrue(contentFile.exists());
-
-		try (InputStream in = new FileInputStream(contentFile)) {
-			final byte[] b = new byte[1024];
-			final int n = in.read(b);
-			assertEquals(data.length(), n);
-			assertEquals(data, new String(b, 0, n));
-		}
+		assertArrayEquals(data.getBytes(), content.getContent());
 	}
 
 }

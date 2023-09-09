@@ -28,7 +28,7 @@ public abstract class AbstractContentDriver implements LightnerContentDriver {
 	protected final File root;
 
 	protected AbstractContentDriver(final File root) throws LightnerDataException {
-		if (root.exists() && !root.isDirectory()) {
+		if (root != null && root.exists() && !root.isDirectory()) {
 			throw new LightnerDataException(root + " already exists and is not a directory");
 		}
 		this.root = root;

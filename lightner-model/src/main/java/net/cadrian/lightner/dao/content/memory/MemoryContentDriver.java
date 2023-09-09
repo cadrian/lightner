@@ -19,6 +19,7 @@ package net.cadrian.lightner.dao.content.memory;
 
 import java.io.File;
 import java.util.Map;
+import java.util.Objects;
 import java.util.concurrent.ConcurrentHashMap;
 
 import net.cadrian.lightner.dao.LightnerDataCard;
@@ -50,6 +51,26 @@ public class MemoryContentDriver extends AbstractContentDriver {
 
 	void delete(final String name) {
 		cards.remove(name);
+	}
+
+	@Override
+	public int hashCode() {
+		final int prime = 31;
+		int result = super.hashCode();
+		result = prime * result + Objects.hash(cards);
+		return result;
+	}
+
+	@Override
+	public boolean equals(final Object obj) {
+		if (this == obj) {
+			return true;
+		}
+		if (!super.equals(obj) || (getClass() != obj.getClass())) {
+			return false;
+		}
+		final MemoryContentDriver other = (MemoryContentDriver) obj;
+		return Objects.equals(cards, other.cards);
 	}
 
 }

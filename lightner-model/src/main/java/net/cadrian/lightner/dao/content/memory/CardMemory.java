@@ -18,6 +18,7 @@
 package net.cadrian.lightner.dao.content.memory;
 
 import java.util.Map;
+import java.util.Objects;
 import java.util.concurrent.ConcurrentHashMap;
 
 import net.cadrian.lightner.dao.LightnerDataCard;
@@ -49,6 +50,24 @@ class CardMemory implements LightnerDataCard {
 	@Override
 	public void delete() throws LightnerDataException {
 		contentDriver.delete(name);
+	}
+
+	@Override
+	public int hashCode() {
+		return Objects.hash(content, contentDriver, name);
+	}
+
+	@Override
+	public boolean equals(final Object obj) {
+		if (this == obj) {
+			return true;
+		}
+		if ((obj == null) || (getClass() != obj.getClass())) {
+			return false;
+		}
+		final CardMemory other = (CardMemory) obj;
+		return Objects.equals(content, other.content) && Objects.equals(contentDriver, other.contentDriver)
+				&& Objects.equals(name, other.name);
 	}
 
 }

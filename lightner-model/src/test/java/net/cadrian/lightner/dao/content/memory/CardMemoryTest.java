@@ -15,55 +15,48 @@
  * You should have received a copy of the GNU General Public License
  * along with Lightner.  If not, see <http://www.gnu.org/licenses/>.
  */
-package net.cadrian.lightner.dao.content.file;
+package net.cadrian.lightner.dao.content.memory;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
-import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 import net.cadrian.lightner.dao.LightnerDataContent;
 import net.cadrian.lightner.dao.LightnerDataException;
 
-class CardFileTest extends AbstractTest {
+class CardMemoryTest extends AbstractTest {
 
-	private FileContentDriver driver;
+	private MemoryContentDriver driver;
 	private String randomName;
-	private File cardFile;
-	private CardFile card;
-	private final List<File> deleted = new ArrayList<>();
+	private CardMemory card;
+	private final List<String> deleted = new ArrayList<>();
+
+	private class ExtendedMemoryContentDriver extends MemoryContentDriver {
+		ExtendedMemoryContentDriver() throws LightnerDataException {
+			super(null);
+		}
+
+		@Override
+		void delete(final String name) {
+			super.delete(name);
+			deleted.add(name);
+		}
+	}
 
 	@BeforeEach
 	void prepareContent() throws LightnerDataException {
 		deleted.clear();
-		driver = new FileContentDriver(tmpdir) {
-			@Override
-			void deleteFile(final File file) {
-				deleted.add(file);
-				deleteFiles(file);
-			}
-		};
+		driver = new ExtendedMemoryContentDriver();
 		randomName = "card-" + UUID.randomUUID();
-		cardFile = new File(tmpdir, randomName);
-		assertTrue(cardFile.mkdir());
-		card = new CardFile(driver, cardFile);
-	}
-
-	@AfterEach
-	void removeContent() throws LightnerDataException {
-		if (cardFile.exists()) {
-			deleteFiles(cardFile);
-		}
+		card = new CardMemory(driver, randomName);
 	}
 
 	@Test
@@ -78,26 +71,17 @@ class CardFileTest extends AbstractTest {
 
 	@Test
 	void testCreateContent() throws LightnerDataException {
-		final File newcontent = new File(cardFile, "newcontent");
-		assertFalse(newcontent.exists());
-		final LightnerDataContent content = card.getContent(newcontent.getName(), true);
+		final LightnerDataContent content = card.getContent("newcontent", true);
 		assertNotNull(content);
-		assertTrue(newcontent.exists());
-		assertEquals(content, card.getContent(newcontent.getName()));
+		assertEquals(content, card.getContent("newcontent"));
 	}
 
 	@Test
 	void testDeleteCard() throws LightnerDataException {
-		final File contenttodelete = new File(cardFile, "contentodelete");
-		assertFalse(contenttodelete.exists());
-		final LightnerDataContent content = card.getContent(contenttodelete.getName(), true);
+		final LightnerDataContent content = card.getContent("contenttodelete", true);
 		assertNotNull(content);
-		assertTrue(contenttodelete.exists());
 		card.delete();
-		assertFalse(contenttodelete.exists());
-		assertFalse(cardFile.exists());
-		assertTrue(deleted.contains(contenttodelete));
-		assertTrue(deleted.contains(cardFile));
+		assertTrue(deleted.contains(randomName));
 	}
 
 }

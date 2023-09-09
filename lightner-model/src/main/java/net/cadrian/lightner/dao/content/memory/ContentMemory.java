@@ -24,6 +24,7 @@ import java.io.InputStream;
 import java.io.OutputStream;
 import java.net.URI;
 import java.net.URISyntaxException;
+import java.util.Objects;
 import java.util.concurrent.atomic.AtomicReference;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -88,6 +89,33 @@ class ContentMemory implements LightnerDataContent {
 	@Override
 	public InputStream getInputStream() {
 		return new ByteArrayInputStream(content.get());
+	}
+
+	@Override
+	public int hashCode() {
+		return Objects.hash(card, name);
+	}
+
+	@Override
+	public boolean equals(final Object obj) {
+		if (this == obj) {
+			return true;
+		}
+		if ((obj == null) || (getClass() != obj.getClass())) {
+			return false;
+		}
+		final ContentMemory other = (ContentMemory) obj;
+		return Objects.equals(card, other.card) && Objects.equals(name, other.name);
+	}
+
+	// test only
+	void setContent(final byte[] content) {
+		this.content.set(content);
+	}
+
+	// test only
+	byte[] getContent() {
+		return content.get();
 	}
 
 }
