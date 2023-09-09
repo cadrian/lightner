@@ -1,4 +1,4 @@
-(https://github.com/cadrian/lightner/actions/workflows/WORKFLOW-FILE/badge.svg)
+![build status](https://github.com/cadrian/lightner/actions/workflows/WORKFLOW-FILE/badge.svg)
 
 # lightner
 
