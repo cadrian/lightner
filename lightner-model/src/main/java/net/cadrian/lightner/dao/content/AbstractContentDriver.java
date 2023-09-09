@@ -18,6 +18,7 @@
 package net.cadrian.lightner.dao.content;
 
 import java.io.File;
+import java.util.Objects;
 
 import net.cadrian.lightner.dao.LightnerContentDriver;
 import net.cadrian.lightner.dao.LightnerDataException;
@@ -31,6 +32,23 @@ public abstract class AbstractContentDriver implements LightnerContentDriver {
 			throw new LightnerDataException(root + " already exists and is not a directory");
 		}
 		this.root = root;
+	}
+
+	@Override
+	public int hashCode() {
+		return Objects.hash(root);
+	}
+
+	@Override
+	public boolean equals(final Object obj) {
+		if (this == obj) {
+			return true;
+		}
+		if ((obj == null) || (getClass() != obj.getClass())) {
+			return false;
+		}
+		final AbstractContentDriver other = (AbstractContentDriver) obj;
+		return Objects.equals(root, other.root);
 	}
 
 }

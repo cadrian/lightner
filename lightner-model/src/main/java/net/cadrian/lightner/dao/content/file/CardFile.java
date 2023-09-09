@@ -53,4 +53,26 @@ class CardFile implements LightnerDataCard {
 		driver.deleteAll(file);
 	}
 
+	@Override
+	public int hashCode() {
+		return Objects.hash(driver, file);
+	}
+
+	@Override
+	public boolean equals(final Object obj) {
+		if (this == obj) {
+			return true;
+		}
+		if ((obj == null) || (getClass() != obj.getClass())) {
+			return false;
+		}
+		final CardFile other = (CardFile) obj;
+		return Objects.equals(driver, other.driver) && Objects.equals(file, other.file);
+	}
+
+	@Override
+	public String toString() {
+		return "CardFile [file=" + file + ", driver=" + driver + "]";
+	}
+
 }

@@ -83,6 +83,7 @@ class CardFileTest extends AbstractTest {
 		final LightnerDataContent content = card.getContent(newcontent.getName(), true);
 		assertNotNull(content);
 		assertTrue(newcontent.exists());
+		assertEquals(content, card.getContent(newcontent.getName()));
 	}
 
 	@Test

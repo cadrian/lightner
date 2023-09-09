@@ -28,6 +28,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.net.URI;
+import java.util.Objects;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -93,6 +94,28 @@ class ContentFile implements LightnerDataContent {
 			logger.log(Level.INFO, e, () -> "File not found: " + file.getPath());
 			return new ByteArrayInputStream(new byte[0]);
 		}
+	}
+
+	@Override
+	public int hashCode() {
+		return Objects.hash(card, file);
+	}
+
+	@Override
+	public boolean equals(final Object obj) {
+		if (this == obj) {
+			return true;
+		}
+		if ((obj == null) || (getClass() != obj.getClass())) {
+			return false;
+		}
+		final ContentFile other = (ContentFile) obj;
+		return Objects.equals(card, other.card) && Objects.equals(file, other.file);
+	}
+
+	@Override
+	public String toString() {
+		return "ContentFile [file=" + file + ", card=" + card + "]";
 	}
 
 }

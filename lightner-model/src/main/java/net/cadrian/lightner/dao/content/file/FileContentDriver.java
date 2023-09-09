@@ -18,6 +18,7 @@
 package net.cadrian.lightner.dao.content.file;
 
 import java.io.File;
+import java.util.Objects;
 import java.util.logging.Logger;
 
 import net.cadrian.lightner.dao.LightnerDataCard;
@@ -56,6 +57,10 @@ public class FileContentDriver extends AbstractContentDriver {
 		return new CardFile(this, f);
 	}
 
+	File getCardsDirectory() {
+		return cards;
+	}
+
 	void deleteAll(final File file) throws LightnerDataException {
 		if (file.isDirectory()) {
 			for (final File f : file.listFiles()) {
@@ -69,6 +74,31 @@ public class FileContentDriver extends AbstractContentDriver {
 		if (!file.delete()) {
 			throw new LightnerDataException("Could not delete " + file.getPath());
 		}
+	}
+
+	@Override
+	public int hashCode() {
+		final int prime = 31;
+		int result = super.hashCode();
+		result = prime * result + Objects.hash(cards);
+		return result;
+	}
+
+	@Override
+	public boolean equals(final Object obj) {
+		if (this == obj) {
+			return true;
+		}
+		if (!super.equals(obj) || (getClass() != obj.getClass())) {
+			return false;
+		}
+		final FileContentDriver other = (FileContentDriver) obj;
+		return Objects.equals(cards, other.cards);
+	}
+
+	@Override
+	public String toString() {
+		return "FileContentDriver [cards=" + cards + "]";
 	}
 
 }
