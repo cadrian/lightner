@@ -87,6 +87,9 @@ if [ "$1" == msi ]; then
     rm -rf win
     buildmsi
 else
+    echo
+    echo Cleaning
+
     rm -rf pkg $HOME/.m2/repository/net/cadrian/lightner
     mkdir -p pkg/build pkg/debs
     cd pkg
