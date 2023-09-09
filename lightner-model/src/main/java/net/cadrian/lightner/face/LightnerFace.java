@@ -17,9 +17,15 @@
  */
 package net.cadrian.lightner.face;
 
+/**
+ * Interface for user interfaces :-)
+ */
 @FunctionalInterface
 public interface LightnerFace {
 
+	/**
+	 * Start the user interface.
+	 */
 	void start();
 
 }

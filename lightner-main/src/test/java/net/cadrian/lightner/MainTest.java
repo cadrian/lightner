@@ -17,22 +17,27 @@
  */
 package net.cadrian.lightner;
 
-import static org.junit.jupiter.api.Assertions.assertTrue;
-
-import java.util.concurrent.atomic.AtomicBoolean;
+import static org.mockito.Mockito.verify;
 
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.Mock;
+import org.mockito.junit.jupiter.MockitoExtension;
 
+import net.cadrian.lightner.face.LightnerFace;
 import net.cadrian.lightner.face.LightnerFaceException;
 
+@ExtendWith(MockitoExtension.class)
 class MainTest {
+
+	@Mock
+	LightnerFace face;
 
 	@Test
 	void testMain() throws LightnerFaceException {
-		final AtomicBoolean started = new AtomicBoolean();
-		Main.setFactory(()->()->started.set(true));
+		Main.setFactory(() -> face);
 		Main.main();
-		assertTrue(started.get());
+		verify(face).start();
 	}
 
 }
