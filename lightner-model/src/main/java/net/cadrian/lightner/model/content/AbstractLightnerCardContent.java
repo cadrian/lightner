@@ -24,6 +24,7 @@ import java.io.OutputStream;
 
 import net.cadrian.lightner.dao.LightnerDataCard;
 import net.cadrian.lightner.dao.LightnerDataContent;
+import net.cadrian.lightner.dao.LightnerDataException;
 import net.cadrian.lightner.model.LightnerCardContent;
 import net.cadrian.lightner.model.LightnerModelException;
 
@@ -49,7 +50,7 @@ public abstract class AbstractLightnerCardContent implements LightnerCardContent
 		return title;
 	}
 
-	protected LightnerDataContent getContent(final String name) {
+	protected LightnerDataContent getContent(final String name) throws LightnerDataException {
 		for (final String suffix : getFileSuffixes()) {
 			final LightnerDataContent result = data.getContent(name + suffix);
 			if (result != null) {
@@ -60,7 +61,12 @@ public abstract class AbstractLightnerCardContent implements LightnerCardContent
 	}
 
 	protected byte[] read(final String name) throws LightnerModelException {
-		final LightnerDataContent content = getContent(name);
+		final LightnerDataContent content;
+		try {
+			content = getContent(name);
+		} catch (final LightnerDataException e) {
+			throw new LightnerModelException(e);
+		}
 		if (content == null) {
 			return empty;
 		}
@@ -78,7 +84,12 @@ public abstract class AbstractLightnerCardContent implements LightnerCardContent
 	}
 
 	protected LightnerDataContent write(final String name, final byte[] content) throws LightnerModelException {
-		final LightnerDataContent result = data.getContent(name, true);
+		final LightnerDataContent result;
+		try {
+			result = data.getContent(name, true);
+		} catch (final LightnerDataException e) {
+			throw new LightnerModelException(e);
+		}
 		try (OutputStream o = result.getOutputStream()) {
 			o.write(content);
 		} catch (final IOException e) {

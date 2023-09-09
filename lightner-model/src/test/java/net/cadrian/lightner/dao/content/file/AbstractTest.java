@@ -45,14 +45,14 @@ abstract class AbstractTest {
 		deleteFiles(tmpdir);
 	}
 
-	private static void deleteFiles(final File file) {
+	protected final static void deleteFiles(final File file) {
 		logger.info(() -> "Deleting: " + file.getPath());
 		if (file.isDirectory()) {
 			for (final File f : file.listFiles()) {
 				deleteFiles(f);
 			}
 		}
-		file.delete();
+		assertTrue(file.delete(), "could not delete file: " + file.getPath());
 	}
 
 	@Test

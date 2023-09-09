@@ -25,6 +25,7 @@ import java.util.Set;
 
 import net.cadrian.lightner.dao.LightnerDataCard;
 import net.cadrian.lightner.dao.LightnerDataContent;
+import net.cadrian.lightner.dao.LightnerDataException;
 import net.cadrian.lightner.model.LightnerModelException;
 import net.cadrian.lightner.model.content.AbstractLightnerCardContent;
 
@@ -38,10 +39,14 @@ public class ContentAudio extends AbstractLightnerCardContent {
 
 	public ContentAudio(final LightnerDataCard data, final String title) throws LightnerModelException {
 		super(data, title);
-		final LightnerDataContent questionContent = getContent("question");
-		question = questionContent == null ? null : new AudioContainerContent(questionContent);
-		final LightnerDataContent answerContent = getContent("answer");
-		answer = answerContent == null ? null : new AudioContainerContent(answerContent);
+		try {
+			final LightnerDataContent questionContent = getContent("question");
+			question = questionContent == null ? null : new AudioContainerContent(questionContent);
+			final LightnerDataContent answerContent = getContent("answer");
+			answer = answerContent == null ? null : new AudioContainerContent(answerContent);
+		} catch (final LightnerDataException e) {
+			throw new LightnerModelException(e);
+		}
 	}
 
 	@Override

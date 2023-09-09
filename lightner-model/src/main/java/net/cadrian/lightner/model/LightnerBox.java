@@ -81,8 +81,12 @@ public class LightnerBox {
 		}
 	}
 
-	boolean move(final LightnerCard card, final int fromBox, final int toBox) {
-		return dao.moveCard(card.getData(), fromBox, toBox);
+	void move(final LightnerCard card, final int fromBox, final int toBox) throws LightnerModelException {
+		try {
+			dao.moveCard(card.getData(), fromBox, toBox);
+		} catch (final LightnerDataException e) {
+			throw new LightnerModelException(e);
+		}
 	}
 
 }

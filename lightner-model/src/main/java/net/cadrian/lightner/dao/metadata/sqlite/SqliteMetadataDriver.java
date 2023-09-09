@@ -120,7 +120,7 @@ public class SqliteMetadataDriver extends AbstractMetadataDriver {
 	}
 
 	@Override
-	public boolean moveCard(final LightnerDataCard card, final int fromBox, final int toBox) {
+	public void moveCard(final LightnerDataCard card, final int fromBox, final int toBox) throws LightnerDataException {
 		try (Connection cnx = DriverManager.getConnection(url);
 				PreparedStatement stmt = cnx.prepareStatement("update CARD set BOX=? where ID=? and BOX=?")) {
 			stmt.setInt(1, toBox);
@@ -129,12 +129,11 @@ public class SqliteMetadataDriver extends AbstractMetadataDriver {
 			final int n = stmt.executeUpdate();
 			if (n != 1) {
 				logger.severe(() -> "Card was not updated: " + card.getName());
-				return false;
+				throw new LightnerDataException("Could not move card");
 			}
-			return true;
 		} catch (final SQLException e) {
 			logger.log(Level.SEVERE, e, () -> "Could not update database");
-			return false;
+			throw new LightnerDataException("Could not move card", e);
 		}
 	}
 

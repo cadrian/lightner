@@ -32,6 +32,8 @@ import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
+import net.cadrian.lightner.dao.LightnerDataException;
+
 class ContentFileTest extends AbstractTest {
 
 	private String randomName;
@@ -40,17 +42,17 @@ class ContentFileTest extends AbstractTest {
 	private ContentFile content;
 
 	@BeforeEach
-	void prepareContent() {
-		randomName = UUID.randomUUID().toString();
-		card = new CardFile(null, new File(tmpdir, "card"));
+	void prepareContent() throws LightnerDataException {
+		randomName = "content-" + UUID.randomUUID();
+		card = new CardFile(new FileContentDriver(tmpdir), new File(tmpdir, "card"));
 		contentFile = new File(tmpdir, randomName);
 		content = new ContentFile(contentFile, card);
 	}
 
 	@AfterEach
-	void removeContent() {
+	void removeContent() throws LightnerDataException {
 		if (contentFile.exists()) {
-			contentFile.delete();
+			deleteFiles(contentFile);
 		}
 	}
 

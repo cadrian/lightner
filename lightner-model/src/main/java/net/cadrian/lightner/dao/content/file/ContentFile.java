@@ -24,6 +24,7 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
+import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.net.URI;
@@ -31,6 +32,7 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import net.cadrian.lightner.dao.LightnerDataContent;
+import net.cadrian.lightner.dao.LightnerDataException;
 
 class ContentFile implements LightnerDataContent {
 
@@ -39,9 +41,18 @@ class ContentFile implements LightnerDataContent {
 	private final File file;
 	private final CardFile card;
 
-	public ContentFile(final File file, final CardFile card) {
+	public ContentFile(final File file, final CardFile card) throws LightnerDataException {
 		this.file = file;
 		this.card = card;
+		if (!file.exists()) {
+			try {
+				if (!file.createNewFile()) {
+					throw new LightnerDataException("Could not create file: " + file.getPath());
+				}
+			} catch (final IOException e) {
+				throw new LightnerDataException(e);
+			}
+		}
 	}
 
 	@Override

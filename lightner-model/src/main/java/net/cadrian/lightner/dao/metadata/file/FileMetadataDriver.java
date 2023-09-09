@@ -81,10 +81,12 @@ public class FileMetadataDriver extends AbstractMetadataDriver {
 	}
 
 	@Override
-	public boolean moveCard(final LightnerDataCard card, final int fromBox, final int toBox) {
+	public void moveCard(final LightnerDataCard card, final int fromBox, final int toBox) throws LightnerDataException {
 		final File from = new File(new File(root, Integer.toString(fromBox)), card.getName());
 		final File to = new File(new File(root, Integer.toString(toBox)), card.getName());
-		return from.renameTo(to);
+		if (!from.renameTo(to)) {
+			throw new LightnerDataException("Could not move card");
+		}
 	}
 
 }

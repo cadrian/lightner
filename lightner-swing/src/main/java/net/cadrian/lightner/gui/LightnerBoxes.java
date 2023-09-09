@@ -180,17 +180,16 @@ class LightnerBoxes extends JPanel {
 		final LightnerCard card = content.get();
 		if (card != null) {
 			final int boxNumber = card.getBoxNumber();
-			final boolean updated;
-			if (boxNumber == 7) {
-				updated = card.update(boxNumber, "Card succeded");
-			} else {
-				updated = card.update(boxNumber + 1, "Card succeded");
-			}
-			if (updated) {
-				logger.severe(() -> "Checked card " + card.getName());
+			try {
+				if (boxNumber == 7) {
+					card.update(boxNumber, "Card succeded");
+				} else {
+					card.update(boxNumber + 1, "Card succeded");
+				}
+				logger.info(() -> "Checked card " + card.getName());
 				content.hide();
-			} else {
-				logger.severe(() -> "Could not check card " + card.getName());
+			} catch (LightnerModelException e) {
+				logger.log(Level.SEVERE, e, () -> "Could not check card " + card.getName());
 			}
 		}
 	}
@@ -198,12 +197,12 @@ class LightnerBoxes extends JPanel {
 	private void failCard(final ActionEvent ae) {
 		final LightnerCard card = content.get();
 		if (card != null) {
-			final boolean updated = card.update(1, "Card failed");
-			if (updated) {
-				logger.severe(() -> "Failed card " + card.getName());
+			try {
+				card.update(1, "Card failed");
+				logger.info(() -> "Failed card " + card.getName());
 				content.hide();
-			} else {
-				logger.severe(() -> "Could not fail card " + card.getName());
+			} catch (LightnerModelException e) {
+				logger.log(Level.SEVERE, e, () -> "Could not fail card " + card.getName());
 			}
 		}
 	}

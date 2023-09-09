@@ -56,12 +56,16 @@ public class FileContentDriver extends AbstractContentDriver {
 		return new CardFile(this, f);
 	}
 
-	void delete(final File file) throws LightnerDataException {
+	void deleteAll(final File file) throws LightnerDataException {
 		if (file.isDirectory()) {
 			for (final File f : file.listFiles()) {
-				delete(f);
+				deleteAll(f);
 			}
 		}
+		deleteFile(file);
+	}
+
+	void deleteFile(final File file) throws LightnerDataException {
 		if (!file.delete()) {
 			throw new LightnerDataException("Could not delete " + file.getPath());
 		}

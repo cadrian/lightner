@@ -30,7 +30,7 @@ class CardFile implements LightnerDataCard {
 	private final FileContentDriver driver;
 
 	CardFile(final FileContentDriver driver, final File file) {
-		this.driver = driver;
+		this.driver = Objects.requireNonNull(driver);
 		this.file = Objects.requireNonNull(file);
 	}
 
@@ -40,7 +40,7 @@ class CardFile implements LightnerDataCard {
 	}
 
 	@Override
-	public LightnerDataContent getContent(final String name, final boolean create) {
+	public LightnerDataContent getContent(final String name, final boolean create) throws LightnerDataException {
 		final File result = new File(file, name);
 		if (!result.exists() && !create) {
 			return null;
@@ -50,7 +50,7 @@ class CardFile implements LightnerDataCard {
 
 	@Override
 	public void delete() throws LightnerDataException {
-		driver.delete(file);
+		driver.deleteAll(file);
 	}
 
 }

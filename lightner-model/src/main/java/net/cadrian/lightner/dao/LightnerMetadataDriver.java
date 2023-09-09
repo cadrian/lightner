@@ -25,6 +25,6 @@ public interface LightnerMetadataDriver {
 
 	LightnerDataCard createCard(final String name, final int box) throws LightnerDataException;
 
-	boolean moveCard(LightnerDataCard card, int fromBox, int toBox);
+	void moveCard(LightnerDataCard card, int fromBox, int toBox) throws LightnerDataException;
 
 }

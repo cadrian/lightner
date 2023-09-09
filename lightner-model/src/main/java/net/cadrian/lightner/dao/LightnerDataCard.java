@@ -21,11 +21,11 @@ public interface LightnerDataCard {
 
 	String getName();
 
-	default LightnerDataContent getContent(final String name) {
+	default LightnerDataContent getContent(final String name) throws LightnerDataException {
 		return getContent(name, false);
 	}
 
-	LightnerDataContent getContent(String name, boolean create);
+	LightnerDataContent getContent(String name, boolean create) throws LightnerDataException;
 
 	void delete() throws LightnerDataException;
 

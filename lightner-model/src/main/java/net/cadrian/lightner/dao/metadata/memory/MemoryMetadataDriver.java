@@ -64,13 +64,12 @@ public class MemoryMetadataDriver extends AbstractMetadataDriver {
 	}
 
 	@Override
-	public boolean moveCard(final LightnerDataCard card, final int fromBox, final int toBox) {
+	public void moveCard(final LightnerDataCard card, final int fromBox, final int toBox) throws LightnerDataException {
 		final String name = card.getName();
-		if (getBox(fromBox).remove(name)) {
-			getBox(toBox).add(name);
-			return true;
+		if (!getBox(fromBox).remove(name)) {
+			throw new LightnerDataException("Could not move card");
 		}
-		return false;
+		getBox(toBox).add(name);
 	}
 
 }

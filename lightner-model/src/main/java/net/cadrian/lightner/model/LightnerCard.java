@@ -26,6 +26,7 @@ import java.util.logging.Logger;
 
 import net.cadrian.lightner.dao.LightnerDataCard;
 import net.cadrian.lightner.dao.LightnerDataContent;
+import net.cadrian.lightner.dao.LightnerDataException;
 
 public class LightnerCard {
 
@@ -50,14 +51,18 @@ public class LightnerCard {
 		boxNumber = 1;
 		content = type.getContent(data, title);
 
-		final LightnerDataContent titleContent = data.getContent("title", true);
-		try (final PrintStream o = new PrintStream(titleContent.getOutputStream())) {
-			o.print(title);
-		}
+		try {
+			final LightnerDataContent titleContent = data.getContent("title", true);
+			try (final PrintStream o = new PrintStream(titleContent.getOutputStream())) {
+				o.print(title);
+			}
 
-		final LightnerDataContent typeContent = data.getContent("type", true);
-		try (final PrintStream o = new PrintStream(typeContent.getOutputStream())) {
-			o.print(type.toString());
+			final LightnerDataContent typeContent = data.getContent("type", true);
+			try (final PrintStream o = new PrintStream(typeContent.getOutputStream())) {
+				o.print(type.toString());
+			}
+		} catch (final LightnerDataException e) {
+			throw new LightnerModelException(e);
 		}
 
 		updateHistory("created", true);
@@ -75,30 +80,42 @@ public class LightnerCard {
 		updateHistory("loaded", false);
 	}
 
-	private void updateHistory(final String comment, final boolean create) {
-		final LightnerDataContent lastData = data.getContent("last", create);
-		try (final PrintStream o = new PrintStream(lastData.getOutputStream())) {
-			o.print(lastChange.toString());
-		}
-		final SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-		final String now = sdf.format(new Date());
-		final LightnerDataContent historyData = data.getContent("history", create);
-		final String line = String.format("%s | box %d | %s", now, boxNumber, comment);
-		try (final PrintStream o = new PrintStream(historyData.getOutputStream(true))) {
-			o.println(line);
+	private void updateHistory(final String comment, final boolean create) throws LightnerModelException {
+		try {
+			final LightnerDataContent lastData = data.getContent("last", create);
+			try (final PrintStream o = new PrintStream(lastData.getOutputStream())) {
+				o.print(lastChange.toString());
+			}
+			final SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+			final String now = sdf.format(new Date());
+			final LightnerDataContent historyData = data.getContent("history", create);
+			final String line = String.format("%s | box %d | %s", now, boxNumber, comment);
+			try (final PrintStream o = new PrintStream(historyData.getOutputStream(true))) {
+				o.println(line);
+			}
+		} catch (final LightnerDataException e) {
+			throw new LightnerModelException(e);
 		}
 	}
 
 	private static LightnerDate getLast(final LightnerDataCard data) throws LightnerModelException {
-		final LightnerDataContent lastData = data.getContent("last");
-		final byte[] buffer = read(lastData);
-		return new LightnerDate(new String(buffer).trim());
+		try {
+			final LightnerDataContent lastData = data.getContent("last");
+			final byte[] buffer = read(lastData);
+			return new LightnerDate(new String(buffer).trim());
+		} catch (final LightnerDataException e) {
+			throw new LightnerModelException(e);
+		}
 	}
 
 	private static String getTitle(final LightnerDataCard data) throws LightnerModelException {
-		final LightnerDataContent titleData = data.getContent("title");
-		final byte[] buffer = read(titleData);
-		return new String(buffer).trim();
+		try {
+			final LightnerDataContent titleData = data.getContent("title");
+			final byte[] buffer = read(titleData);
+			return new String(buffer).trim();
+		} catch (final LightnerDataException e) {
+			throw new LightnerModelException(e);
+		}
 	}
 
 	private static LightnerCardType getType(final LightnerDataCard data) throws LightnerModelException {
@@ -106,7 +123,7 @@ public class LightnerCard {
 			final LightnerDataContent typeData = data.getContent("type");
 			final byte[] buffer = read(typeData);
 			return LightnerCardType.valueOf(new String(buffer).trim());
-		} catch (final IllegalArgumentException e) {
+		} catch (final IllegalArgumentException | LightnerDataException e) {
 			throw new LightnerModelException(e);
 		}
 	}
@@ -154,16 +171,17 @@ public class LightnerCard {
 		return content;
 	}
 
-	public boolean update(final int boxNumber, final String comment) {
-		if (!box.move(this, this.boxNumber, boxNumber)) {
-			logger.severe(() -> "Could not move box " + getName() + " from " + this.boxNumber + " to " + boxNumber);
-			return false;
+	public void update(final int boxNumber, final String comment) throws LightnerModelException {
+		try {
+			box.move(this, this.boxNumber, boxNumber);
+		} catch (final LightnerModelException e) {
+			throw new LightnerModelException(
+					"Could not move box " + getName() + " from " + this.boxNumber + " to " + boxNumber);
 		}
 
 		lastChange = new LightnerDate();
 		this.boxNumber = boxNumber;
 		updateHistory(comment, false);
-		return true;
 	}
 
 }
