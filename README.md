@@ -1,3 +1,5 @@
+(https://github.com/cadrian/lightner/actions/workflows/WORKFLOW-FILE/badge.svg)
+
 # lightner
 
 A simple Leitner box, with an obvious pun.
