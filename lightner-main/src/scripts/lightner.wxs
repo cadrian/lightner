@@ -12,8 +12,11 @@
       </Directory>
     </Directory>
 
-    <Feature Id='Complete' Level='1'>
+    <Feature Id='Main' Level='1'>
       <ComponentGroupRef Id='lightner_main' />
+    </Feature>
+
+    <Feature Id='Jdk' Level='1'>
       <ComponentGroupRef Id='lightner_jdk' />
     </Feature>
 

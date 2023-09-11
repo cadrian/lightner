@@ -62,6 +62,17 @@ buildmsi() {
     echo Building Windows MSI
 
     mkdir -p win/src/lib win/src/jdk win/out
+    out=$(pwd)/win/out
+
+    (
+        cd ../lightner-main
+        mvn dependency:build-classpath -DincludeScope=runtime -Dmdep.outputFile=$out/cp.txt
+        # also adding main
+        {
+            echo -n ":"
+            ls $(pwd)/target/*.jar
+        } >> $out/cp.txt
+    )
 
     if [ -r $HOME/.cache/openjdk.zip ]; then
         cp $HOME/.cache/openjdk.zip win/
@@ -74,23 +85,32 @@ buildmsi() {
     unzip -b -d win/src/jdk -o -q win/openjdk.zip
 
     sed 's/$/\r/g' ../lightner-main/src/scripts/lightner.ps1.template > win/src/lightner.ps1
-    cp build/lightner-main/target/main-0.0.1-SNAPSHOT.jar win/src/lib/main.jar
-    cp build/lightner-model/target/model-0.0.1-SNAPSHOT.jar win/src/lib/model.jar
-    cp build/lightner-swing/target/swing-0.0.1-SNAPSHOT.jar win/src/lib/swing.jar
+    cat $out/cp.txt | tr ':' '\n' | while read f; do
+        echo ">>> $f"
+        t=win/src/lib/$(echo "${f##*/}" | sed 's/-[0-9].*\.jar$/.jar/')
+        echo "  > $t"
+        cp "$f" "$t"
+    done
 
-    find win/src -name jdk -prune | wixl-heat -p win/src/ --component-group lightner_main --var var.DESTDIR --directory-ref=INSTALLDIR > win/lightner_main.wxs
+    find win/src -name jdk -prune -o -print | sort | wixl-heat -p win/src/ --component-group lightner_main --var var.DESTDIR --directory-ref=INSTALLDIR > win/lightner_main.wxi
     jdk=$(ls -d win/src/jdk/*)
     echo jdk=$jdk
     mv $jdk/* win/src/jdk/
     rmdir $jdk
-    find win/src/jdk | wixl-heat -p win/src/ --component-group lightner_jdk --var var.DESTDIR --directory-ref=INSTALLDIR > win/lightner_jdk.wxs
+    find win/src/jdk -print | sort | wixl-heat -p win/src/ --component-group lightner_jdk --var var.DESTDIR --directory-ref=INSTALLDIR > win/lightner_jdk.wxi
 
+    cp ../lightner-main/src/scripts/lightner.wxs win/
     MANUFACTURER='Cyril Adrian' wixl -D SourceDir=win/src -D DESTDIR=win/src -v \
                 -o win/out/lightner.msi \
-                ../lightner-main/src/scripts/lightner.wxs \
-                win/lightner_main.wxs \
-                win/lightner_jdk.wxs
+                win/lightner.wxs \
+                win/lightner_main.wxi \
+                win/lightner_jdk.wxi
 }
+
+echo
+echo "Testing & Packaging"
+
+mvn package || exit 1
 
 if [ "$1" == msi ]; then
     cd pkg
@@ -102,12 +122,6 @@ else
 
     rm -rf pkg $HOME/.m2/repository/net/cadrian/lightner
     mkdir -p pkg/build pkg/debs
-
-
-    echo
-    echo Testing
-
-    mvn test || exit 1
 
     cd pkg
 
